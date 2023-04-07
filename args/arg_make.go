@@ -22,12 +22,13 @@ func ArgMake() error {
 		fmt.Printf("\tdocker-compose stop %s\n", service.NameVersion)
 		fmt.Printf("\tdocker-compose up -d %s\n", service.NameVersion)
 	}
-	fmt.Println("\n--- make clone-all")
+	fmt.Println("\n# make clone-all")
 	fmt.Println("clone-all:")
 	for _, service := range services.Services {
-		fmt.Printf("\tgit clone https://{{ .ProjectRepo }}/back/%s.git ../../back\n", service.NameVersion)
+		fmt.Printf("\tgit clone https://%s/back/%s.git ../../back\n",
+			service.ProjectRepo, service.NameVersion)
 	}
-	fmt.Println("\n--- make pull-all")
+	fmt.Println("\n# make pull-all")
 	fmt.Println("pull-all:")
 	for _, service := range services.Services {
 		fmt.Printf("\tgit -C ../../back/%s pull\n", service.NameVersion)
