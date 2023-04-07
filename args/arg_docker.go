@@ -23,40 +23,40 @@ const (
 #      - "{{ .Port }}:9000"
 #      - "{{ .HttpPort }}:8000"
     depends_on:
-      - postgres
+#      - postgres
       - jaeger
     networks:
       - backend
 `
-	config = `
-server:
-  grpc:
-    addr: :9000
-    timeout: 1s
-  http:
-    addr: :8000
-    timeout: 1s
-jwks:
-  url: ${JWKS_URL}
-  refresh_interval: 3600s
-  refresh_rate_limit: 300s
-  refresh_timeout: 10s
-business:
-data:
-  relational:
-    dialect: postgres
-    host: ${POSTGRES_HOST}
-    port: ${POSTGRES_PORT}
-    user: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    dbname: ${POSTGRES_DB}
-    schema: {{ .Name }}
-    ssl_mode: ${POSTGRES_SSL_MODE}
-trace:
-  endpoint: ${JAEGER_ENDPOINT}
-#sentry:
-#  dsn: ${SENTRY_DSN}
-`
+	//	config = `
+	//server:
+	//  grpc:
+	//    addr: :9000
+	//    timeout: 1s
+	//  http:
+	//    addr: :8000
+	//    timeout: 1s
+	//jwks:
+	//  url: ${JWKS_URL}
+	//  refresh_interval: 3600s
+	//  refresh_rate_limit: 300s
+	//  refresh_timeout: 10s
+	//business:
+	//data:
+	//  relational:
+	//    dialect: postgres
+	//    host: ${POSTGRES_HOST}
+	//    port: ${POSTGRES_PORT}
+	//    user: ${POSTGRES_USER}
+	//    password: ${POSTGRES_PASSWORD}
+	//    dbname: ${POSTGRES_DB}
+	//    schema: {{ .Name }}
+	//    ssl_mode: ${POSTGRES_SSL_MODE}
+	//trace:
+	//  endpoint: ${JAEGER_ENDPOINT}
+	//#sentry:
+	//#  dsn: ${SENTRY_DSN}
+	//`
 )
 
 func ArgDocker() error {
@@ -80,15 +80,15 @@ func ArgDocker() error {
 			return err
 		}
 	}
-	fmt.Println("\n--- config")
-	tempConfig, err := template.New("config").Parse(config)
-	if err != nil {
-		return err
-	}
-	for _, service := range services.Services {
-		if err := tempConfig.Execute(os.Stdout, service); err != nil {
-			return err
-		}
-	}
+	//fmt.Println("\n--- config")
+	//tempConfig, err := template.New("config").Parse(config)
+	//if err != nil {
+	//	return err
+	//}
+	//for _, service := range services.Services {
+	//	if err := tempConfig.Execute(os.Stdout, service); err != nil {
+	//		return err
+	//	}
+	//}
 	return nil
 }
