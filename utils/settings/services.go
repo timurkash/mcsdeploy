@@ -3,8 +3,10 @@ package settings
 import (
 	"bufio"
 	"fmt"
-	"github.com/timurkash/mcsdeploy/utils"
 	"os"
+	"strings"
+
+	"github.com/timurkash/mcsdeploy/utils"
 
 	"gopkg.in/yaml.v3"
 )
@@ -15,10 +17,12 @@ const (
 
 type (
 	Service struct {
-		Name     string `yaml:"name"`
-		Version  string `yaml:"version"`
-		Port     int16  `yaml:"port"`
-		HttpPort int16  `yaml:"httpPort"`
+		Name        string `yaml:"name"`
+		Version     string `yaml:"version"`
+		NameVersion string
+		Port        int16 `yaml:"port"`
+		HttpPort    int16 `yaml:"httpPort"`
+		ProjectRepo string
 	}
 	Services struct {
 		Services []Service `yaml:"services"`
@@ -35,6 +39,17 @@ func (s *Services) Load() error {
 	}
 	if err := yaml.NewDecoder(bufio.NewReader(file)).Decode(s); err != nil {
 		return err
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	goPath := os.Getenv("GOPATH")
+	projectRepo := strings.ReplaceAll(wd, fmt.Sprintf("%s/src/", goPath), "")
+	projectRepo = strings.ReplaceAll(projectRepo, "/deploy/local", "")
+	for i, service := range s.Services {
+		s.Services[i].NameVersion = fmt.Sprintf("%s-%s", service.Name, service.Version)
+		s.Services[i].ProjectRepo = projectRepo
 	}
 	return nil
 }

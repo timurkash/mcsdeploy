@@ -22,20 +22,28 @@ func main() {
 		log.Fatalln("argument must begin with dash")
 	}
 	switch arg {
-	case "-upv":
-		if err := args.ArgUp(2); err != nil {
-			log.Fatalln(err)
-		}
-	case "-uvp":
-		if err := args.ArgUp(1); err != nil {
-			log.Fatalln(err)
-		}
-	case "-vup":
-		if err := args.ArgUp(0); err != nil {
-			log.Fatalln(err)
-		}
+	//case "-upv":
+	//	if err := args.ArgUp(2); err != nil {
+	//		log.Fatalln(err)
+	//	}
+	//case "-uvp":
+	//	if err := args.ArgUp(1); err != nil {
+	//		log.Fatalln(err)
+	//	}
+	//case "-vup":
+	//	if err := args.ArgUp(0); err != nil {
+	//		log.Fatalln(err)
+	//	}
 	case "-env":
 		if err := args.ArgEnvoy(); err != nil {
+			log.Fatalln(err)
+		}
+	case "-doc":
+		if err := args.ArgDocker(); err != nil {
+			log.Fatalln(err)
+		}
+	case "-mak":
+		if err := args.ArgMake(); err != nil {
 			log.Fatalln(err)
 		}
 	case "-prt":
