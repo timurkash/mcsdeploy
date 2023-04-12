@@ -21,19 +21,23 @@ func main() {
 	if arg[0] != '-' {
 		log.Fatalln("argument must begin with dash")
 	}
+	if len(argStrings) < 3 {
+		args.ShowDescription()
+	}
+	service := argStrings[2]
 	switch arg {
-	//case "-upv":
-	//	if err := args.ArgUp(2); err != nil {
-	//		log.Fatalln(err)
-	//	}
-	//case "-uvp":
-	//	if err := args.ArgUp(1); err != nil {
-	//		log.Fatalln(err)
-	//	}
-	//case "-vup":
-	//	if err := args.ArgUp(0); err != nil {
-	//		log.Fatalln(err)
-	//	}
+	case "-upv":
+		if err := args.ArgUp(2, service); err != nil {
+			log.Fatalln(err)
+		}
+	case "-uvp":
+		if err := args.ArgUp(1, service); err != nil {
+			log.Fatalln(err)
+		}
+	case "-vup":
+		if err := args.ArgUp(0, service); err != nil {
+			log.Fatalln(err)
+		}
 	case "-env":
 		if err := args.ArgEnvoy(); err != nil {
 			log.Fatalln(err)

@@ -26,7 +26,7 @@ func ArgMake() error {
 	fmt.Println("clone-all:")
 	for _, service := range services.Services {
 		fmt.Printf("\tgit clone https://%s/back/%s.git ../../back\n",
-			service.ProjectRepo, service.NameVersion)
+			services.ProjectRepo, service.NameVersion)
 	}
 	fmt.Println("\n# make pull-all")
 	fmt.Println("pull-all:")

@@ -22,10 +22,10 @@ type (
 		NameVersion string
 		Port        int16 `yaml:"port"`
 		HttpPort    int16 `yaml:"httpPort"`
-		ProjectRepo string
 	}
 	Services struct {
-		Services []Service `yaml:"services"`
+		Services    []Service `yaml:"services"`
+		ProjectRepo string
 	}
 )
 
@@ -49,7 +49,7 @@ func (s *Services) Load() error {
 	projectRepo = strings.ReplaceAll(projectRepo, "/deploy/local", "")
 	for i, service := range s.Services {
 		s.Services[i].NameVersion = fmt.Sprintf("%s-%s", service.Name, service.Version)
-		s.Services[i].ProjectRepo = projectRepo
 	}
+	s.ProjectRepo = projectRepo
 	return nil
 }

@@ -3,6 +3,7 @@ package utils
 import (
 	"log"
 	"os"
+	"strings"
 )
 
 type Util struct {
@@ -24,6 +25,11 @@ func IsFileExists(filename string) bool {
 		return false
 	}
 	return false
+}
+
+func GetTag(image string) string {
+	p := strings.LastIndex(image, ":")
+	return image[p:]
 }
 
 //

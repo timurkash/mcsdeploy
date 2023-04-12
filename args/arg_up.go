@@ -5,21 +5,41 @@ import (
 	"errors"
 	"fmt"
 	"github.com/timurkash/mcsdeploy/utils/commands"
+	"github.com/timurkash/mcsdeploy/utils/settings"
 	"os"
 	"strconv"
 )
 
-func ArgUp(level int) error {
-	badTagError := errors.New("bad tag")
-	version, err := commands.Exec("git", "describe", "--tags", "--abbrev=0")
+var badTagError = errors.New("bad tag")
+
+func ArgUp(level int, serviceName string) error {
+
+	dcServices := &settings.DCServices{}
+	if err := dcServices.Load(); err != nil {
+		return err
+	}
+	service, ok := dcServices.Services[serviceName]
+	if !ok {
+		fmt.Errorf("service %s not found", serviceName)
+	}
+	os.Chdir(service.Build.Context)
+	status, err := commands.Exec("git", "status")
 	if err != nil {
 		return err
 	}
-	version = version[:len(version)-1]
-	if !bytes.HasPrefix(version, []byte("v")) {
-		return errors.New("version has not prefix \"v\"")
+	if !bytes.Contains(status, []byte("nothing to commit")) {
+		errors.New("not committed")
 	}
-	parts := bytes.Split(version[1:], []byte("."))
+	tag, err := commands.Exec("git", "describe", "--tags", "--abbrev=0")
+	if err != nil {
+		return err
+	}
+	tag = bytes.Trim(tag, "\n")
+	fmt.Printf("version is %s", tag)
+	if tag[0] != 'v' {
+		return errors.New(" bad tag")
+	}
+	parts := bytes.Split(tag[1:], []byte("."))
 	if len(parts) != 3 {
 		return badTagError
 	}
@@ -51,19 +71,20 @@ func ArgUp(level int) error {
 	if err != nil {
 		return err
 	}
-	valuesBytes, err := os.ReadFile("values.yaml")
-	if err != nil {
-		return err
-	}
-	valuesBytes = bytes.ReplaceAll(valuesBytes,
-		[]byte(fmt.Sprintf("  tag: %s", string(version))),
-		[]byte(fmt.Sprintf("  tag: %s", versionNext)))
-	if err := os.WriteFile("values.yaml", valuesBytes, 0644); err != nil {
-		return err
-	}
-	if err := os.WriteFile("tag", []byte(versionNext), 0644); err != nil {
-		return err
-	}
+
+	//valuesBytes, err := os.ReadFile("values.yaml")
+	//if err != nil {
+	//	return err
+	//}
+	//valuesBytes = bytes.ReplaceAll(valuesBytes,
+	//	[]byte(fmt.Sprintf("  tag: %s", string(version))),
+	//	[]byte(fmt.Sprintf("  tag: %s", versionNext)))
+	//if err := os.WriteFile("values.yaml", valuesBytes, 0644); err != nil {
+	//	return err
+	//}
+	//if err := os.WriteFile("tag", []byte(versionNext), 0644); err != nil {
+	//	return err
+	//}
 	return nil
 }
 
