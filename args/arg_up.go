@@ -8,52 +8,73 @@ import (
 	"github.com/timurkash/mcsdeploy/utils/settings"
 	"os"
 	"strconv"
+	"strings"
 )
 
-var badTagError = errors.New("bad tag")
-
 func ArgUp(level int, serviceName string) error {
-
+	curDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
 	dcServices := &settings.DCServices{}
 	if err := dcServices.Load(); err != nil {
 		return err
 	}
 	service, ok := dcServices.Services[serviceName]
 	if !ok {
-		fmt.Errorf("service %s not found", serviceName)
+		return fmt.Errorf("service %s not found", serviceName)
 	}
-	os.Chdir(service.Build.Context)
+	if service.Build == nil {
+		return fmt.Errorf("no build section")
+	}
+	if err := os.Chdir(service.Build.Context); err != nil {
+		return err
+	}
 	status, err := commands.Exec("git", "status")
 	if err != nil {
 		return err
 	}
 	if !bytes.Contains(status, []byte("nothing to commit")) {
-		errors.New("not committed")
+		return fmt.Errorf("%s not committed", serviceName)
 	}
 	tag, err := commands.Exec("git", "describe", "--tags", "--abbrev=0")
 	if err != nil {
 		return err
 	}
 	tag = bytes.Trim(tag, "\n")
-	fmt.Printf("version is %s", tag)
 	if tag[0] != 'v' {
-		return errors.New(" bad tag")
+		return errors.New("version tag must begin with v")
 	}
 	parts := bytes.Split(tag[1:], []byte("."))
 	if len(parts) != 3 {
-		return badTagError
+		return fmt.Errorf("bad tag")
 	}
-	major, err := getInt(parts[0])
-	if err != nil {
-		return err
+	fmt.Printf("version tag is %s\n", tag)
+	imageTag := getTag(service.Image)
+	fmt.Printf("  image tag is %s\n", imageTag)
+	if string(tag) != imageTag {
+		return errors.New("tags not according")
 	}
-	minor, err := getInt(parts[1])
-	if err != nil {
-		return err
+	major := 0
+	minor := 0
+	patch := 0
+	if level == 0 {
+		major, err = getInt(parts[0])
+		if err != nil {
+			return err
+		}
 	}
-	patch, err := getInt(parts[2])
-	if err != nil {
-		return err
+	if level <= 1 {
+		minor, err = getInt(parts[1])
+		if err != nil {
+			return err
+		}
+	}
+	if level <= 2 {
+		patch, err = getInt(parts[2])
+		if err != nil {
+			return err
+		}
 	}
 	switch level {
 	case 0:
@@ -67,27 +88,24 @@ func ArgUp(level int, serviceName string) error {
 		patch++
 	}
 	versionNext := fmt.Sprintf("v%d.%d.%d", major, minor, patch)
-	_, err = commands.Exec("git", "tag", "-a", versionNext, "-F", "tag_message")
+	_, err = commands.Exec("git", "tag", "-a", versionNext,
+		"-m", fmt.Sprintf("version tag up to %s", versionNext))
 	if err != nil {
 		return err
 	}
-
-	//valuesBytes, err := os.ReadFile("values.yaml")
-	//if err != nil {
-	//	return err
-	//}
-	//valuesBytes = bytes.ReplaceAll(valuesBytes,
-	//	[]byte(fmt.Sprintf("  tag: %s", string(version))),
-	//	[]byte(fmt.Sprintf("  tag: %s", versionNext)))
-	//if err := os.WriteFile("values.yaml", valuesBytes, 0644); err != nil {
-	//	return err
-	//}
-	//if err := os.WriteFile("tag", []byte(versionNext), 0644); err != nil {
-	//	return err
-	//}
-	return nil
+	if err := os.Chdir(curDir); err != nil {
+		return err
+	}
+	newImageTag := strings.ReplaceAll(service.Image, string(tag), versionNext)
+	newDat := bytes.ReplaceAll(dcServices.Dat, []byte(service.Image), []byte(newImageTag))
+	return dcServices.Save(newDat)
 }
 
 func getInt(part []byte) (int, error) {
 	return strconv.Atoi(string(part))
+}
+
+func getTag(image string) string {
+	p := strings.LastIndex(image, ":")
+	return image[p+1:]
 }

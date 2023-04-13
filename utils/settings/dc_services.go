@@ -1,7 +1,6 @@
 package settings
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/timurkash/mcsdeploy/utils"
 	"gopkg.in/yaml.v3"
@@ -10,11 +9,12 @@ import (
 
 type (
 	DCServices struct {
-		Services map[string]DCService `yaml:"services"`
+		Services map[string]*DCService `yaml:"services"`
+		Dat      []byte
 	}
 	DCService struct {
 		Image string `yaml:"image"`
-		Build Build  `yaml:"build"`
+		Build *Build `yaml:"build"`
 	}
 	Build struct {
 		Context    string `yaml:"context"`
@@ -22,20 +22,20 @@ type (
 	}
 )
 
-const (
-	DockerCompose = "docker-compose.yml"
-)
+const DockerCompose = "docker-compose.yml"
 
 func (s *DCServices) Load() error {
 	if !utils.IsFileExists(DockerCompose) {
 		return fmt.Errorf("filename %s not exists", DockerCompose)
 	}
-	file, err := os.Open(DockerCompose)
+	var err error
+	s.Dat, err = os.ReadFile(DockerCompose)
 	if err != nil {
 		return err
 	}
-	if err := yaml.NewDecoder(bufio.NewReader(file)).Decode(s); err != nil {
-		return err
-	}
-	return nil
+	return yaml.Unmarshal(s.Dat, s)
+}
+
+func (s *DCServices) Save(dat []byte) error {
+	return os.WriteFile(DockerCompose, dat, 0644)
 }
