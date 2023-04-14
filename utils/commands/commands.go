@@ -4,6 +4,15 @@ import (
 	"os/exec"
 )
 
+func Exec(name string, args ...string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	stdout, err := cmd.Output()
+	if err != nil {
+		return nil, err
+	}
+	return stdout, nil
+}
+
 //func ExecOnline(name string, args ...string) error {
 //	fmt.Println(name, strings.Join(args, " "))
 //	cmd := exec.Command(name, args...)
@@ -27,12 +36,3 @@ import (
 //		fmt.Print(string(oneByte))
 //	}
 //}
-
-func Exec(name string, args ...string) ([]byte, error) {
-	cmd := exec.Command(name, args...)
-	stdout, err := cmd.Output()
-	if err != nil {
-		return nil, err
-	}
-	return stdout, nil
-}
