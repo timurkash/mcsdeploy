@@ -71,10 +71,11 @@ message ShopProductInfo {
   string name = 1;
 }
 
+message Filter {
+  common.String name = 1;
+}
+
 message ListShopProductsRequest {
-  message Filter {
-    common.String name = 1;
-  }
   Filter filter = 1;
   common.OrderOffsetLimit ool = 2;
 }
