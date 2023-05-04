@@ -30,12 +30,8 @@ message {{ .Single }}Info {
   string name = 1;
 }
 
-message Filter {
-  common.String name = 1;
-}
-
 message List{{ .Plural }}Request {
-  Filter filter = 1;
+  common.Filter filter = 1;
   common.OrderOffsetLimit ool = 2;
 }
 
