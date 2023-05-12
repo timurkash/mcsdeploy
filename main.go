@@ -21,10 +21,13 @@ func main() {
 	if arg[0] != '-' {
 		log.Fatalln("argument must begin with dash")
 	}
-	if len(argStrings) < 3 {
+	if len(argStrings) == 1 {
 		args.ShowDescription()
 	}
-	service := argStrings[2]
+	var service string
+	if len(argStrings) == 3 {
+		service = argStrings[2]
+	}
 	switch arg {
 	case "-upv":
 		if err := args.ArgUp(2, service); err != nil {
