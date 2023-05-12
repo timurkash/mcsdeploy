@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	route = `                        - match: { prefix: "/api.{{ .Name }}." }
+	route = `                        - match: 
+                            prefix: "/api.{{ .Name }}."
                           route:
                             cluster: {{ .NameVersion }}-cluster
                             max_grpc_timeout: 0s

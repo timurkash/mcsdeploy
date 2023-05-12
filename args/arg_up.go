@@ -49,9 +49,9 @@ func ArgUp(level int, serviceName string) error {
 	if len(parts) != 3 {
 		return fmt.Errorf("bad tag")
 	}
-	fmt.Printf("version tag is %s\n", tag)
+	fmt.Printf("version tag was %s\n", tag)
 	imageTag := getTag(service.Image)
-	fmt.Printf("  image tag is %s\n", imageTag)
+	fmt.Printf("  image tag was %s\n", imageTag)
 	if string(tag) != imageTag {
 		return errors.New("tags not according")
 	}
