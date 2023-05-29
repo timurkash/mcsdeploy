@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/timurkash/mcsdeploy/args"
+	"github.com/timurkash/mcsdeploy/utils"
 	"log"
 	"os"
 )
@@ -53,22 +54,22 @@ func main() {
 		if err := args.ArgMake(); err != nil {
 			log.Fatalln(err)
 		}
-	case "-prt":
-		var (
-			single string
-			plural string
-		)
-		if len(argStrings) >= 3 {
-			single = argStrings[2]
-		}
-		if len(argStrings) >= 4 {
-			plural = argStrings[3]
-		}
-		if single == "" {
+	case "-rep":
+		sp := utils.GetSinglePlural(argStrings)
+		if sp == nil {
 			args.ShowDescription()
 			return
 		}
-		if err := args.ArgProto(single, plural); err != nil {
+		if err := utils.StdOut(args.RepoTemp, sp); err != nil {
+			log.Fatalln(err)
+		}
+	case "-prt":
+		sp := utils.GetSinglePlural(argStrings)
+		if sp == nil {
+			args.ShowDescription()
+			return
+		}
+		if err := utils.StdOut(args.ProtoTemp, sp); err != nil {
 			log.Fatalln(err)
 		}
 	default:

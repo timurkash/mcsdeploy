@@ -1,12 +1,7 @@
 package args
 
 import (
-	"github.com/stoewer/go-strcase"
-	"os"
 	"text/template"
-
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 const (
@@ -42,31 +37,4 @@ message List{{ .Plural }}Reply {
 `
 )
 
-type SinglePlural struct {
-	Single      string
-	SingleLower string
-	Plural      string
-	PluralLower string
-}
-
-var cas = cases.Title(language.English)
-
-func ArgProto(single, plural string) error {
-	if plural == "" {
-		plural = single + "s"
-	}
-	sp := &SinglePlural{
-		Single:      strcase.UpperCamelCase(cas.String(single)),
-		SingleLower: single,
-		Plural:      strcase.UpperCamelCase(cas.String(plural)),
-		PluralLower: plural,
-	}
-	tempProto, err := template.New("proto").Parse(proto)
-	if err != nil {
-		return err
-	}
-	if err := tempProto.Execute(os.Stdout, sp); err != nil {
-		return err
-	}
-	return nil
-}
+var ProtoTemp, _ = template.New("proto").Parse(proto)
