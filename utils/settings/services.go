@@ -48,6 +48,10 @@ func (s *Services) Load() error {
 	projectRepo := strings.ReplaceAll(wd, fmt.Sprintf("%s/src/", goPath), "")
 	projectRepo = strings.ReplaceAll(projectRepo, "/deploy/local", "")
 	for i, service := range s.Services {
+		if s.Services[i].Version == "" {
+			s.Services[i].Version = "v1"
+			service.Version = "v1"
+		}
 		s.Services[i].NameVersion = fmt.Sprintf("%s-%s", service.Name, service.Version)
 	}
 	s.ProjectRepo = projectRepo
