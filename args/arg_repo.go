@@ -11,12 +11,6 @@ func (s *{{ .Single }}Service) Act{{ .Single }}(ctx context.Context, req *pb.{{ 
 }
 
 func (s *{{ .Single }}Service) List{{ .Plural }}(ctx context.Context, req *pb.List{{ .Plural }}Request) (*pb.List{{ .Plural }}Reply, error) {
-	if req.Filter == nil {
-		return nil, cerrors.FilterRequired
-	}
-	if req.Ool == nil {
-		return nil, cerrors.OrderOffsetLimitRequired
-	}
 	{{ .PluralLower }}, paging, err := s.uc.List{{ .Plural }}(ctx, req.Filter, req.Ool)
 	if err != nil {
 		return nil, err
@@ -122,12 +116,14 @@ func (r *{{ .SingleLower }}Repo) Update{{ .Single }}(ctx context.Context, id uin
 
 func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error) {
 	{{ .PluralLower }}Query := r.data.relational.{{ .Single }}.Query()
-	if filter.Name != nil {
-		name := filter.Name.Value
-		{{ .PluralLower }}Query.Where(
-			{{ .SingleLower }}.Or(
-			),
-		)
+	if filter != nil {
+		if filter.Name != nil {
+			name := filter.Name.Value
+			{{ .PluralLower }}Query.Where(
+				{{ .SingleLower }}.Or(
+				),
+			)
+		}
 	}
 	total, err := {{ .PluralLower }}Query.Count(ctx)
 	if err != nil {
