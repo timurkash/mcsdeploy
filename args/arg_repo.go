@@ -149,10 +149,10 @@ func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *
 	}
 	return {{ .PluralLower }}, &common.Paging{
 		Order:   "id",
-		Offset:  ool.Offset,
-		Limit:   ool.Limit,
+		Offset:  offset,
+		Limit:   limit,
 		Total:   uint32(total),
-		HasNext: len({{ .PluralLower }})+int(ool.Offset) < total,
+		HasNext: len({{ .PluralLower }})+int(offset) < total,
 	}, nil
 }
 `
