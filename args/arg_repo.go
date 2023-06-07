@@ -75,8 +75,14 @@ func (r *{{ .SingleLower }}Repo) get{{ .Single }}Reply(record *ent.{{ .Single }}
 	}
 }
 
-func (r *{{ .SingleLower }}Repo) getMax(ctx context.Context) (uint32, error) {
-	return 0, nil
+func (r *{{ .SingleLower }}Repo) getMax{{ .Single }}(ctx context.Context) (uint32, error) {
+	var v []struct {
+		Max int
+	}
+	if err := r.data.relational.{{ .Single }}.Query().Aggregate(ent.Max(consts.Id)).Scan(ctx, &v); err != nil {
+		return 0, err
+	}
+	return uint32(v[0].Max), nil
 }
 
 func (r *{{ .SingleLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32) (*pb.{{ .Single }}Reply, error) {
@@ -88,7 +94,7 @@ func (r *{{ .SingleLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32
 }
 
 func (r *{{ .SingleLower }}Repo) Create{{ .Single }}(ctx context.Context, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
-	max, err := r.getMax(ctx)
+	max, err := r.getMax{{ .Single }}(ctx)
 	if err != nil {
 		return nil, err
 	}
