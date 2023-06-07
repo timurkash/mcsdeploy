@@ -11,14 +11,7 @@ func (s *{{ .Single }}Service) Act{{ .Single }}(ctx context.Context, req *pb.{{ 
 }
 
 func (s *{{ .Single }}Service) List{{ .Plural }}(ctx context.Context, req *pb.List{{ .Plural }}Request) (*pb.List{{ .Plural }}Reply, error) {
-	{{ .PluralLower }}, paging, err := s.uc.List{{ .Plural }}(ctx, req.Filter, req.Ool)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.List{{ .Plural }}Reply{
-		{{ .Plural }}:   {{ .PluralLower }},
-		Paging: paging,
-	}, nil
+	return s.uc.List{{ .Plural }}(ctx, req.Filter, req.Ool)
 }
 
 ---
@@ -61,11 +54,18 @@ func (uc *{{ .Single }}Usecase) List{{ .Plural }}(
 	ctx context.Context,
 	filter *common.Filter,
 	ool *common.OrderOffsetLimit,
-) ([]*pb.{{ .Single }}Reply, *common.Paging, error) {
+) (*pb.List{{ .Plural }}Reply, error) {
 	if err := uc.checkPermission(ctx); err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return uc.repo.List{{ .Plural }}(ctx, filter, ool)
+	{{ .PluralLower }}, paging, err := uc.repo.List{{ .Plural }}(ctx, filter, ool)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.List{{ .Plural }}Reply{
+		{{ .Plural }}: {{ .PluralLower }},
+		Paging: paging,
+	}, nil
 }
 
 ---
