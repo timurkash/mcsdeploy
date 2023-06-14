@@ -79,14 +79,14 @@ func (r *{{ .SingleLower }}Repo) getMax{{ .Single }}(ctx context.Context) (uint3
 	var v []struct {
 		Max int
 	}
-	if err := r.data.relational.{{ .Single }}.Query().Aggregate(ent.Max(consts.Id)).Scan(ctx, &v); err != nil {
+	if err := r.relational.{{ .Single }}.Query().Aggregate(ent.Max(consts.Id)).Scan(ctx, &v); err != nil {
 		return 0, err
 	}
 	return uint32(v[0].Max), nil
 }
 
 func (r *{{ .SingleLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32) (*pb.{{ .Single }}Reply, error) {
-	record, err := r.data.relational.{{ .Single }}.Get(ctx, id)
+	record, err := r.relational.{{ .Single }}.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (r *{{ .SingleLower }}Repo) Create{{ .Single }}(ctx context.Context, info *
 		return nil, err
 	}
 	now := time.Now()
-	create{{ .Single }}Record := r.data.relational.{{ .Single }}.Create().
+	create{{ .Single }}Record := r.relational.{{ .Single }}.Create().
 		SetID(max + 1).
 		SetCreatedAt(now).
 		SetUpdatedAt(now)
@@ -111,7 +111,7 @@ func (r *{{ .SingleLower }}Repo) Create{{ .Single }}(ctx context.Context, info *
 }
 
 func (r *{{ .SingleLower }}Repo) Update{{ .Single }}(ctx context.Context, id uint32, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
-	update{{ .Single }}Record := r.data.relational.{{ .Single }}.UpdateOneID(id).
+	update{{ .Single }}Record := r.relational.{{ .Single }}.UpdateOneID(id).
 		SetUpdatedAt(time.Now())
 	{{ .SingleLower }}Updated, err := update{{ .Single }}Record.Save(ctx)
 	if err != nil {
@@ -121,7 +121,7 @@ func (r *{{ .SingleLower }}Repo) Update{{ .Single }}(ctx context.Context, id uin
 }
 
 func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error) {
-	{{ .PluralLower }}Query := r.data.relational.{{ .Single }}.Query()
+	{{ .PluralLower }}Query := r.relational.{{ .Single }}.Query()
 	if filter != nil {
 		if filter.Name != nil {
 			// name := filter.Name.Value
