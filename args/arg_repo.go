@@ -124,7 +124,7 @@ func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *
 	{{ .PluralLower }}Query := r.data.relational.{{ .Single }}.Query()
 	if filter != nil {
 		if filter.Name != nil {
-			name := filter.Name.Value
+			// name := filter.Name.Value
 			{{ .PluralLower }}Query.Where(
 				{{ .SingleLower }}.Or(
 				),
