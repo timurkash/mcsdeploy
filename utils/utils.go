@@ -1,11 +1,12 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strings"
 	"text/template"
 
-	"github.com/stoewer/go-strcase"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -54,11 +55,18 @@ func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
 	if plural == "" {
 		plural = single + "s"
 	}
+	title := func(str string) string {
+		return cas.String(single[:1]) + str[1:]
+	}
+	lower := func(str string) string {
+		return strings.ToLower(single[:1]) + str[1:]
+	}
+	fmt.Println(title(single), lower(single))
 	return &SinglePlural{
-		Single:      strcase.UpperCamelCase(cas.String(single)),
-		SingleLower: single,
-		Plural:      strcase.UpperCamelCase(cas.String(plural)),
-		PluralLower: plural,
+		Single:      title(single),
+		SingleLower: lower(single),
+		Plural:      title(plural),
+		PluralLower: lower(plural),
 	}
 }
 
