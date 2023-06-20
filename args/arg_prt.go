@@ -7,11 +7,11 @@ import (
 const (
 	proto = `
   // {{ .Single }}
-  rpc Act{{ .Single }} ({{ .Single }}Request) returns ({{ .Single }}Reply);
+  rpc Act{{ .Single }} (Act{{ .Single }}Request) returns ({{ .Single }}Reply);
   rpc List{{ .Plural }} (List{{ .Plural }}Request) returns (List{{ .Plural }}Reply);
 
 // {{ .Single }}
-message {{ .Single }}Request {
+message Act{{ .Single }}Request {
   common.ActionId action_id = 1;
   {{ .Single }}Info {{ .SingleLower }} = 2;
 }
