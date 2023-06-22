@@ -6,9 +6,12 @@ import (
 
 const (
 	proto = `
+// --- services
   // {{ .Single }}
   rpc Act{{ .Single }} (Act{{ .Single }}Request) returns ({{ .Single }}Reply);
   rpc List{{ .Plural }} (List{{ .Plural }}Request) returns (List{{ .Plural }}Reply);
+
+// --- messages
 
 // {{ .Single }}
 message Act{{ .Single }}Request {

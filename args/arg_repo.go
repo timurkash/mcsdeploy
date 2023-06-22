@@ -6,7 +6,9 @@ import (
 
 const (
 	repo = `
-func (s *{{ .Single }}Service) Act{{ .Single }}(ctx context.Context, req *pb.{{ .Single }}Request) (*pb.{{ .Single }}Reply, error) {
+// --- services
+
+func (s *{{ .Single }}Service) Act{{ .Single }}(ctx context.Context, req *pb.Act{{ .Single }}Request) (*pb.{{ .Single }}Reply, error) {
 	return s.uc.Act{{ .Single }}(ctx, req.ActionId, req.{{ .Single }})
 }
 
@@ -14,7 +16,7 @@ func (s *{{ .Single }}Service) List{{ .Plural }}(ctx context.Context, req *pb.Li
 	return s.uc.List{{ .Plural }}(ctx, req.Filter, req.Ool)
 }
 
----
+// --- biz interface
 
 type {{ .Single }}Repo interface {
 	Get{{ .Single }}(context.Context, uint32) (*pb.{{ .Single }}Reply, error)
@@ -23,7 +25,7 @@ type {{ .Single }}Repo interface {
 	List{{ .Plural }}(context.Context, *common.Filter, *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error)
 }
 
----
+// --- biz implementation
 
 func (uc *{{ .Single }}Usecase) checkPermission(ctx context.Context) error {
 	return jwt.IsPermitted(ctx, jwt.{{ .Single }}Admin)
@@ -68,7 +70,7 @@ func (uc *{{ .Single }}Usecase) List{{ .Plural }}(
 	}, nil
 }
 
----
+// --- repo implementation
 
 func (r *{{ .SingleLower }}Repo) get{{ .Single }}Reply(record *ent.{{ .Single }}) *pb.{{ .Single }}Reply {
 	return &pb.{{ .Single }}Reply{
