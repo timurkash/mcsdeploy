@@ -1,8 +1,8 @@
 package args
 
-import (
-	"text/template"
-)
+import "text/template"
+
+var ProtoTemp, _ = template.New("proto").Parse(proto)
 
 const (
 	proto = `
@@ -39,5 +39,3 @@ message List{{ .Plural }}Reply {
 }
 `
 )
-
-var ProtoTemp, _ = template.New("proto").Parse(proto)

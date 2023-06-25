@@ -1,8 +1,8 @@
 package args
 
-import (
-	"text/template"
-)
+import "text/template"
+
+var RepoTemp, _ = template.New("repo").Parse(repo)
 
 const (
 	repo = `
@@ -65,7 +65,7 @@ func (uc *{{ .Single }}Usecase) List{{ .Plural }}(
 		return nil, err
 	}
 	return &pb.List{{ .Plural }}Reply{
-		{{ .Plural }}: {{ .PluralLower }},
+		Items: items,
 		Paging: paging,
 	}, nil
 }
@@ -127,7 +127,7 @@ func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *
 	if filter != nil {
 		if filter.Name != nil {
 			// name := filter.Name.Value
-			{{ .PluralLower }}Query.Where(
+			{{ .Lower }}Query.Where(
 				{{ .SingleLower }}.Or(
 				),
 			)
@@ -147,12 +147,12 @@ func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *
 		{{ .PluralLower }}Query.Offset(int(offset)).Limit(int(limit))
 	}
 	{{ .PluralLower }}Query.Order(ent.Asc("id"))
-	items, err := {{ .PluralLower }}Query.All(ctx)
+	itemsAll, err := {{ .PluralLower }}Query.All(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
 	{{ .PluralLower }} := make([]*pb.{{ .Single }}Reply, 0, limit)
-	for _, item := range items {
+	for _, item := range itemsAll {
 		{{ .PluralLower }} = append({{ .PluralLower }}, r.get{{ .Single }}Reply(item))
 	}
 	return {{ .PluralLower }}, &common.Paging{
@@ -165,5 +165,3 @@ func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *
 }
 `
 )
-
-var RepoTemp, _ = template.New("repo").Parse(repo)

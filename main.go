@@ -72,6 +72,14 @@ func main() {
 		if err := utils.StdOut(args.ProtoTemp, sp); err != nil {
 			log.Fatalln(err)
 		}
+	case "-sql":
+		if len(argStrings) <= 2 {
+			args.ShowDescription()
+			return
+		}
+		if err := args.ArgSql(argStrings[2]); err != nil {
+			log.Fatalln(err)
+		}
 	default:
 		log.Fatalf("option %s not defined\n", arg)
 	}
