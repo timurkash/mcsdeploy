@@ -113,13 +113,13 @@ ent init --target ./internal/data/ent/schema %s
             try {
                 const the%s = Array()
                 const reply = await client.list%s(new List%sRequest(), metadata)
-                reply.get%sList().forEach(el => the%s.push(this.getItem(el)))
+                reply.getItemsList().forEach(el => the%s.push(this.getItem(el)))
                 this.%s = the%s
             } catch (err) {
                 console.error(err)
             }
         },
-`, ucc, ucc, ucc, ucc, ucc, ucc, ucc_, ucc)
+`, ucc, ucc, ucc, ucc, ucc, ucc_, ucc)
 	fmt.Printf(`
         getItem(el) {
             const item = el.getItem()
