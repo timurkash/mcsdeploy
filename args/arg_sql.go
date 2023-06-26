@@ -71,8 +71,12 @@ ent init --target ./internal/data/ent/schema %s
 	for _, field := range fields {
 		var entType string
 		switch field.Type {
-		case "string", "uint32":
+		case "string", "uint32", "bool", "uint64", "float32":
 			entType = fmt.Sprintf("%s%s", strings.ToUpper(field.Type[:1]), field.Type[1:])
+		case "float64":
+			entType = "Double"
+		default:
+			return fmt.Errorf("type %s not encountered", field.Type)
 		}
 		fmt.Printf(`        field.%s("%s"),
 `, entType, field.Name)
@@ -92,13 +96,21 @@ ent init --target ./internal/data/ent/schema %s
 // set%s
 `, ucc)
 	for i, field := range fields {
-		if i == len(fields)-1 {
+		if i == 0 {
+			fmt.Printf(`
+        .Set%s(info.%s)`, field.Camel, field.Camel)
+		} else if i == len(fields)-1 {
 			fmt.Printf(`
         Set%s(info.%s)`, field.Camel, field.Camel)
 		} else {
 			fmt.Printf(`
         Set%s(info.%s).`, field.Camel, field.Camel)
 		}
+	}
+	fmt.Println("// Or")
+	for _, field := range fields {
+		fmt.Printf(`
+            %s.%s(name)`, ucc_, field.Camel)
 	}
 	fmt.Printf(`
 
@@ -113,17 +125,17 @@ ent init --target ./internal/data/ent/schema %s
             try {
                 const the%s = Array()
                 const reply = await client.list%s(new List%sRequest(), metadata)
-                reply.getItemsList().forEach(el => the%s.push(this.getItem(el)))
+                reply.getItemsList().forEach(el => the%s.push(this.get%sItem(el)))
                 this.%s = the%s
             } catch (err) {
                 console.error(err)
             }
         },
-`, ucc, ucc, ucc, ucc, ucc, ucc_, ucc)
+`, ucc, ucc, ucc, ucc, ucc, ucc, ucc_, ucc)
 	fmt.Printf(`
-        getItem(el) {
+        get%sItem(el) {
             const item = el.getItem()
-            return {`)
+            return {`, ucc)
 	for _, field := range fields {
 		fmt.Printf(`
                 %s: item.get%s(),`, field.Camel_, field.Camel)
@@ -131,5 +143,13 @@ ent init --target ./internal/data/ent/schema %s
 	fmt.Println(`
             }
         },`)
+	fmt.Printf(`
+                .set%s(new %sInfo()`, ucc, ucc)
+	for _, field := range fields {
+		fmt.Printf(`
+                    .set%s(%s.value.%s)`, field.Camel, ucc_, field.Camel_)
+	}
+	fmt.Println(`
+                )`)
 	return nil
 }

@@ -13,6 +13,17 @@ const (
 	FieldsFilename = "fields.yaml"
 )
 
+var fields = map[string]struct{}{
+	"string": {},
+	"uint32": {},
+	"uint64": {},
+	"bool":   {},
+	"int32":  {},
+	"int64":  {},
+	"float":  {},
+	"double": {},
+}
+
 type (
 	Fields struct {
 		Fields map[string]string `yaml:"fields"`
@@ -31,7 +42,7 @@ func (f *Fields) Load() error {
 		return err
 	}
 	for k, v := range f.Fields {
-		if !(v == "string" || v == "uint32") { // TODO
+		if _, ok := fields[v]; !ok {
 			return fmt.Errorf("wrong type %s for fileld %s", v, k)
 		}
 	}

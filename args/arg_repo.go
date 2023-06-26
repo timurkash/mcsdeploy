@@ -8,17 +8,17 @@ const (
 	repo = `
 // --- services
 
-func (s *{{ .Single }}Service) Act{{ .Single }}(ctx context.Context, req *pb.Act{{ .Single }}Request) (*pb.{{ .Single }}Reply, error) {
+func (s *{{ .Service }}Service) Act{{ .Single }}(ctx context.Context, req *pb.Act{{ .Single }}Request) (*pb.{{ .Single }}Reply, error) {
 	return s.uc.Act{{ .Single }}(ctx, req.ActionId, req.{{ .Single }})
 }
 
-func (s *{{ .Single }}Service) List{{ .Plural }}(ctx context.Context, req *pb.List{{ .Plural }}Request) (*pb.List{{ .Plural }}Reply, error) {
+func (s *{{ .Service }}Service) List{{ .Plural }}(ctx context.Context, req *pb.List{{ .Plural }}Request) (*pb.List{{ .Plural }}Reply, error) {
 	return s.uc.List{{ .Plural }}(ctx, req.Filter, req.Ool)
 }
 
 // --- biz interface
 
-type {{ .Single }}Repo interface {
+type {{ .Service }}Repo interface {
 	Get{{ .Single }}(context.Context, uint32) (*pb.{{ .Single }}Reply, error)
 	Create{{ .Single }}(context.Context, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
 	Update{{ .Single }}(context.Context, uint32, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
@@ -27,11 +27,11 @@ type {{ .Single }}Repo interface {
 
 // --- biz implementation
 
-func (uc *{{ .Single }}Usecase) checkPermission(ctx context.Context) error {
+func (uc *{{ .Service }}Usecase) checkPermission(ctx context.Context) error {
 	return jwt.IsPermitted(ctx, jwt.{{ .Single }}Admin)
 }
 
-func (uc *{{ .Single }}Usecase) Act{{ .Single }}(ctx context.Context, actionId *common.ActionId, {{ .SingleLower }}Info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
+func (uc *{{ .Service }}Usecase) Act{{ .Single }}(ctx context.Context, actionId *common.ActionId, {{ .SingleLower }}Info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
 	if err := cerrors.CheckActionId(actionId, {{ .SingleLower }}Info,
 		common.Action_get,
 		common.Action_insert,
@@ -52,7 +52,7 @@ func (uc *{{ .Single }}Usecase) Act{{ .Single }}(ctx context.Context, actionId *
 	return nil, cerrors.GetWrongActionError(actionId.Action)
 }
 
-func (uc *{{ .Single }}Usecase) List{{ .Plural }}(
+func (uc *{{ .Service }}Usecase) List{{ .Plural }}(
 	ctx context.Context,
 	filter *common.Filter,
 	ool *common.OrderOffsetLimit,
@@ -72,12 +72,12 @@ func (uc *{{ .Single }}Usecase) List{{ .Plural }}(
 
 // --- repo implementation
 
-func (r *{{ .SingleLower }}Repo) get{{ .Single }}Reply(record *ent.{{ .Single }}) *pb.{{ .Single }}Reply {
+func (r *{{ .ServiceLower }}Repo) get{{ .Single }}Reply(record *ent.{{ .Single }}) *pb.{{ .Single }}Reply {
 	return &pb.{{ .Single }}Reply{
 	}
 }
 
-func (r *{{ .SingleLower }}Repo) getMax{{ .Single }}(ctx context.Context) (uint32, error) {
+func (r *{{ .ServiceLower }}Repo) getMax{{ .Single }}(ctx context.Context) (uint32, error) {
 	var v []struct {
 		Max int
 	}
@@ -87,7 +87,7 @@ func (r *{{ .SingleLower }}Repo) getMax{{ .Single }}(ctx context.Context) (uint3
 	return uint32(v[0].Max), nil
 }
 
-func (r *{{ .SingleLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32) (*pb.{{ .Single }}Reply, error) {
+func (r *{{ .ServiceLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32) (*pb.{{ .Single }}Reply, error) {
 	record, err := r.relational.{{ .Single }}.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (r *{{ .SingleLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32
 	return r.get{{ .Single }}Reply(record), nil
 }
 
-func (r *{{ .SingleLower }}Repo) Create{{ .Single }}(ctx context.Context, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
+func (r *{{ .ServiceLower }}Repo) Create{{ .Single }}(ctx context.Context, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
 	max, err := r.getMax{{ .Single }}(ctx)
 	if err != nil {
 		return nil, err
@@ -112,7 +112,7 @@ func (r *{{ .SingleLower }}Repo) Create{{ .Single }}(ctx context.Context, info *
 	return r.get{{ .Single }}Reply({{ .SingleLower }}Created), nil
 }
 
-func (r *{{ .SingleLower }}Repo) Update{{ .Single }}(ctx context.Context, id uint32, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
+func (r *{{ .ServiceLower }}Repo) Update{{ .Single }}(ctx context.Context, id uint32, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
 	update{{ .Single }}Record := r.relational.{{ .Single }}.UpdateOneID(id).
 		SetUpdatedAt(time.Now())
 	{{ .SingleLower }}Updated, err := update{{ .Single }}Record.Save(ctx)
@@ -122,12 +122,12 @@ func (r *{{ .SingleLower }}Repo) Update{{ .Single }}(ctx context.Context, id uin
 	return r.get{{ .Single }}Reply({{ .SingleLower }}Updated), nil
 }
 
-func (r *{{ .SingleLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error) {
+func (r *{{ .ServiceLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error) {
 	{{ .PluralLower }}Query := r.relational.{{ .Single }}.Query()
 	if filter != nil {
 		if filter.Name != nil {
 			// name := filter.Name.Value
-			{{ .Lower }}Query.Where(
+			{{ .PluralLower }}Query.Where(
 				{{ .SingleLower }}.Or(
 				),
 			)

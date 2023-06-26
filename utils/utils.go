@@ -33,11 +33,13 @@ func IsFileExists(filename string) bool {
 }
 
 type SinglePlural struct {
-	Single      string
-	SingleLower string
-	Lower       string
-	Plural      string
-	PluralLower string
+	Single       string
+	SingleLower  string
+	Lower        string
+	Plural       string
+	PluralLower  string
+	Service      string
+	ServiceLower string
 }
 
 var cas = cases.Title(language.English)
@@ -50,6 +52,12 @@ func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
 	if len(argStrings) >= 3 {
 		single = argStrings[2]
 	}
+	service := single
+	if strings.Contains(single, ":") {
+		split := strings.Split(single, ":")
+		single = split[0]
+		service = split[1]
+	}
 	if len(argStrings) >= 4 {
 		plural = argStrings[3]
 	}
@@ -57,10 +65,10 @@ func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
 		plural = single + "s"
 	}
 	title := func(str string) string {
-		return cas.String(single[:1]) + str[1:]
+		return cas.String(str[:1]) + str[1:]
 	}
 	lower := func(str string) string {
-		return strings.ToLower(single[:1]) + str[1:]
+		return strings.ToLower(str[:1]) + str[1:]
 	}
 	fmt.Println(title(single), lower(single))
 	return &SinglePlural{
@@ -69,7 +77,9 @@ func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
 		Lower:       strings.ToLower(single),
 		Plural:      title(plural),
 		//PluralLower: lower(plural),
-		PluralLower: "items",
+		PluralLower:  "items",
+		Service:      service,
+		ServiceLower: lower(service),
 	}
 }
 
