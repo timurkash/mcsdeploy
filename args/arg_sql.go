@@ -151,5 +151,13 @@ ent init --target ./internal/data/ent/schema %s
 	}
 	fmt.Println(`
                 )`)
+	fmt.Printf(`
+  formData.value = {`)
+	for _, field := range fields {
+		fmt.Printf(`
+    %s: data.value.%s,`, field.Camel_, field.Camel_)
+	}
+	fmt.Printf(`
+  }`)
 	return nil
 }
