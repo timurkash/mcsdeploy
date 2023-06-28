@@ -107,10 +107,14 @@ ent init --target ./internal/data/ent/schema %s
         Set%s(info.%s).`, field.Camel, field.Camel)
 		}
 	}
-	fmt.Println("// Or")
+	fmt.Println(`
+
+// Or`)
 	for _, field := range fields {
-		fmt.Printf(`
-            %s.%s(name)`, ucc_, field.Camel)
+		if field.Type == "string" {
+			fmt.Printf(`
+            %s.%s(name),`, ucc_, field.Camel)
+		}
 	}
 	fmt.Printf(`
 
