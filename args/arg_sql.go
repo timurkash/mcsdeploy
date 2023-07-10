@@ -71,10 +71,10 @@ ent init --target ./internal/data/ent/schema %s
 	for _, field := range fields {
 		var entType string
 		switch field.Type {
-		case "string", "uint32", "bool", "uint64", "float32":
+		case "string", "uint32", "bool", "uint64", "float", "double":
 			entType = fmt.Sprintf("%s%s", strings.ToUpper(field.Type[:1]), field.Type[1:])
-		case "float64":
-			entType = "Double"
+		//case "float64":
+		//	entType = "Double"
 		default:
 			return fmt.Errorf("type %s not encountered", field.Type)
 		}
@@ -95,17 +95,9 @@ ent init --target ./internal/data/ent/schema %s
 	fmt.Printf(`
 // set%s
 `, ucc)
-	for i, field := range fields {
-		if i == 0 {
-			fmt.Printf(`
-        .Set%s(info.%s)`, field.Camel, field.Camel)
-		} else if i == len(fields)-1 {
-			fmt.Printf(`
-        Set%s(info.%s)`, field.Camel, field.Camel)
-		} else {
-			fmt.Printf(`
+	for _, field := range fields {
+		fmt.Printf(`
         Set%s(info.%s).`, field.Camel, field.Camel)
-		}
 	}
 	fmt.Println(`
 
@@ -139,10 +131,11 @@ ent init --target ./internal/data/ent/schema %s
 	fmt.Printf(`
         get%sItem(el) {
             const item = el.getItem()
-            return {`, ucc)
+            return {
+              idTimestamps: getIdTimestamp(el.getIdTimestamps()),`, ucc)
 	for _, field := range fields {
 		fmt.Printf(`
-                %s: item.get%s(),`, field.Camel_, field.Camel)
+              %s: item.get%s(),`, field.Camel_, field.Camel)
 	}
 	fmt.Println(`
             }
