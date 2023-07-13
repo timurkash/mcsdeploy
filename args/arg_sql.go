@@ -27,10 +27,16 @@ func ArgSql(fieldsTable string) error {
 	fieldsString := split[0]
 	table := split[1]
 	fieldsSplit := strings.Split(fieldsString, ",")
+	var sqlFieldsSplit []string
+	for i := range fieldsSplit {
+		sqlFieldsSplit = append(sqlFieldsSplit, fmt.Sprintf("  `%s`", fieldsSplit[i]))
+	}
 	fmt.Printf(`
 --- sql
 
-select %s from %s`, strings.Join(fieldsSplit, ", "), table)
+select 
+%s
+from %s`, strings.Join(sqlFieldsSplit, ", \n"), table)
 	var fields []Field
 	for counter, field := range fieldsSplit {
 		typ, ok := fieldTypes.Fields[field]
