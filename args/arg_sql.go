@@ -57,9 +57,9 @@ from %s`, strings.Join(sqlFieldsSplit, ", \n"), table)
 
 --- proto
 
-mcsdeploy -rep %s | pbcopy
-
 mcsdeploy -prt %s | pbcopy
+
+mcsdeploy -rep %s | pbcopy
 
 message %sInfo {
 `, ucc, ucc, ucc)
@@ -77,10 +77,12 @@ ent init --target ./internal/data/ent/schema %s
 	for _, field := range fields {
 		var entType string
 		switch field.Type {
-		case "string", "uint32", "bool", "uint64", "float", "double":
+		case "string", "uint32", "bool", "uint64":
 			entType = fmt.Sprintf("%s%s", strings.ToUpper(field.Type[:1]), field.Type[1:])
-		//case "float64":
-		//	entType = "Double"
+		case "double":
+			entType = "Float"
+		case "float":
+			entType = "Float32"
 		default:
 			return fmt.Errorf("type %s not encountered", field.Type)
 		}
@@ -161,6 +163,8 @@ ent init --target ./internal/data/ent/schema %s
     %s: data.value.%s,`, field.Camel_, field.Camel_)
 	}
 	fmt.Printf(`
-  }`)
+  }
+
+`)
 	return nil
 }
