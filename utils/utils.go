@@ -35,6 +35,7 @@ func IsFileExists(filename string) bool {
 type SinglePlural struct {
 	Single       string
 	SingleLower  string
+	SingleLower_ string
 	Lower        string
 	Plural       string
 	PluralLower  string
@@ -72,10 +73,11 @@ func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
 	}
 	fmt.Println(title(single), lower(single))
 	return &SinglePlural{
-		Single:      title(single),
-		SingleLower: lower(single),
-		Lower:       strings.ToLower(single),
-		Plural:      title(plural),
+		Single:       title(single),
+		SingleLower:  lower(single),
+		SingleLower_: strings.ToLower(single),
+		Lower:        strings.ToLower(single),
+		Plural:       title(plural),
 		//PluralLower: lower(plural),
 		PluralLower:  "items",
 		Service:      service,

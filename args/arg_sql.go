@@ -53,6 +53,7 @@ from %s`, strings.Join(sqlFieldsSplit, ", \n"), table)
 	}
 	ucc := strcase.UpperCamelCase(table)
 	ucc_ := strcase.LowerCamelCase(table)
+	ucc__ := strings.ToLower(table)
 	fmt.Printf(`
 
 --- proto
@@ -113,7 +114,7 @@ ent init --target ./internal/data/ent/schema %s
 	for _, field := range fields {
 		if field.Type == "string" {
 			fmt.Printf(`
-            %s.%s(name),`, ucc_, field.Camel)
+            %s.%s(name),`, ucc__, field.Camel)
 		}
 	}
 	fmt.Printf(`
@@ -131,11 +132,12 @@ ent init --target ./internal/data/ent/schema %s
                 const reply = await client.list%s(new List%sRequest(), metadata)
                 reply.getItemsList().forEach(el => the%s.push(this.get%sItem(el)))
                 this.%s = the%s
+                return the%s
             } catch (err) {
                 console.error(err)
             }
         },
-`, ucc, ucc, ucc, ucc, ucc, ucc, ucc_, ucc)
+`, ucc, ucc, ucc, ucc, ucc, ucc, ucc_, ucc, ucc)
 	fmt.Printf(`
         get%sItem(el) {
             const item = el.getItem()
