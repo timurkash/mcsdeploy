@@ -65,7 +65,7 @@ func (uc *{{ .Service }}Usecase) List{{ .Plural }}(
 		return nil, err
 	}
 	return &pb.List{{ .Plural }}Reply{
-		Items: items,
+		{{ .Plural }}: {{ .PluralLower }},
 		Paging: paging,
 	}, nil
 }
