@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
+	"github.com/stoewer/go-strcase"
 	"log"
 	"os"
 	"strings"
@@ -9,6 +11,7 @@ import (
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+	"gopkg.in/yaml.v3"
 )
 
 type Util struct {
@@ -33,23 +36,25 @@ func IsFileExists(filename string) bool {
 }
 
 type SinglePlural struct {
-	Single       string
-	SingleLower  string
-	SingleLower_ string
-	Lower        string
-	Plural       string
-	PluralLower  string
-	Service      string
-	ServiceLower string
+	Single           string
+	SingleLower      string
+	SingleLowerLower string
+	Lower            string
+	Plural           string
+	PluralLower      string
+	SnakeLower       string
+	SnakePlural      string
+	Service          string
+	ServiceLower     string
 }
 
 var cas = cases.Title(language.English)
 
 func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
-	if len(argStrings) < 2 {
+	if len(argStrings) < 3 {
 		return nil
 	}
-	var single, plural string
+	var single string
 	if len(argStrings) >= 3 {
 		single = argStrings[2]
 	}
@@ -59,32 +64,65 @@ func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
 		single = split[0]
 		service = split[1]
 	}
-	if len(argStrings) >= 4 {
-		plural = argStrings[3]
-	}
-	if plural == "" {
-		plural = single + "s"
-	}
+	plural := getPlural(single)
 	title := func(str string) string {
 		return cas.String(str[:1]) + str[1:]
 	}
 	lower := func(str string) string {
 		return strings.ToLower(str[:1]) + str[1:]
 	}
-	fmt.Println(title(single), lower(single))
 	return &SinglePlural{
-		Single:       title(single),
-		SingleLower:  lower(single),
-		SingleLower_: strings.ToLower(single),
-		Lower:        strings.ToLower(single),
-		Plural:       title(plural),
-		//PluralLower: lower(plural),
-		PluralLower:  "items",
-		Service:      service,
-		ServiceLower: lower(service),
+		Single:           title(single),
+		SingleLower:      lower(single),
+		SingleLowerLower: strings.ToLower(single),
+		Lower:            strings.ToLower(single),
+		SnakeLower:       strcase.SnakeCase(single),
+		SnakePlural:      strcase.SnakeCase(plural),
+		Plural:           title(plural),
+		PluralLower:      lower(plural),
+		Service:          service,
+		ServiceLower:     lower(service),
 	}
+}
+
+func getPlural(single string) string {
+	const irrPluralsFilename = "irr_plurals.yaml"
+	plural := fmt.Sprintf("%ss", single)
+	if !IsFileExists(irrPluralsFilename) {
+		return plural
+	}
+	names := make(map[string]string)
+	file, err := os.Open(irrPluralsFilename)
+	if err != nil {
+		return plural
+	}
+	if err := yaml.NewDecoder(bufio.NewReader(file)).Decode(names); err != nil {
+		return plural
+	}
+	if pluralFound, ok := names[single]; ok {
+		return pluralFound
+	}
+	return plural
 }
 
 func StdOut(template *template.Template, sp *SinglePlural) error {
 	return template.Execute(os.Stdout, sp)
 }
+
+//type IrrPlurals struct {
+//	Names map[string]string `yaml:"names"`
+//}
+//
+//const irrPluralsFilename = "irr_plurals.yaml"
+//
+//func (ip *IrrPlurals) Load() error {
+//	ip.Names = make(map[string]string)
+//	if !utils.IsFileExists(irrPluralsFilename) {
+//		return nil
+//	}
+//	file, err := os.Open(irrPluralsFilename)
+//	if err != nil {
+//		return err
+//	}
+//	return yaml.NewDecoder(bufio.NewReader(file)).Decode(ip)
+//}

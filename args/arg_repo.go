@@ -128,7 +128,7 @@ func (r *{{ .ServiceLower }}Repo) List{{ .Plural }}(ctx context.Context, filter 
 		if filter.Name != nil {
 			// name := filter.Name.Value
 			{{ .PluralLower }}Query.Where(
-				{{ .SingleLower_ }}.Or(
+				{{ .SingleLowerLower }}.Or(
 				),
 			)
 		}

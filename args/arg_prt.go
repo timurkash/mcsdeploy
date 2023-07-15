@@ -16,11 +16,11 @@ const (
 // {{ .Single }}
 message Act{{ .Single }}Request {
   common.ActionId action_id = 1;
-  {{ .Single }}Info {{ .SingleLower }} = 2;
+  {{ .Single }}Info {{ .SnakeLower }} = 2;
 }
 
 message {{ .Single }}Reply {
-  {{ .Single }}Info {{ .SingleLower }} = 1;
+  {{ .Single }}Info {{ .SnakeLower }} = 1;
   common.IdTimestamps id_timestamps = 2;
 }
 
@@ -34,7 +34,7 @@ message List{{ .Plural }}Request {
 }
 
 message List{{ .Plural }}Reply {
-  repeated {{ .Single }}Reply {{ .PluralLower }} = 1;
+  repeated {{ .Single }}Reply {{ .SnakePlural }} = 1;
   common.Paging paging = 2;
 }
 `

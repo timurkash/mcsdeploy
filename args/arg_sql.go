@@ -1,24 +1,52 @@
 package args
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/stoewer/go-strcase"
-	settingsPackage "github.com/timurkash/mcsdeploy/utils/settings"
+	"github.com/timurkash/mcsdeploy/utils"
+	"gopkg.in/yaml.v3"
+	"os"
 	"strings"
 )
 
 type Field struct {
-	Name    string
-	Type    string
-	Camel   string
-	Camel_  string
-	Counter uint16
+	Name       string
+	Type       string
+	Camel      string
+	CamelLower string
+	Counter    uint16
 }
 
+var fieldTypes = map[string]struct{}{
+	"string": {},
+	"uint32": {},
+	"uint64": {},
+	"bool":   {},
+	"int32":  {},
+	"int64":  {},
+	"float":  {},
+	"double": {},
+}
+
+const fieldsFilename = "fields.yaml"
+
 func ArgSql(fieldsTable string) error {
-	fieldTypes := &settingsPackage.Fields{}
-	if err := fieldTypes.Load(); err != nil {
+	fieldsMap := make(map[string]string)
+	if !utils.IsFileExists(fieldsFilename) {
+		return fmt.Errorf("filename %s not exists", fieldsFilename)
+	}
+	file, err := os.Open(fieldsFilename)
+	if err != nil {
 		return err
+	}
+	if err := yaml.NewDecoder(bufio.NewReader(file)).Decode(fieldsMap); err != nil {
+		return err
+	}
+	for k, v := range fieldsMap {
+		if _, ok := fieldTypes[v]; !ok {
+			return fmt.Errorf("wrong type %s for fileld %s", v, k)
+		}
 	}
 	split := strings.Split(fieldsTable, ":")
 	if len(split) != 2 {
@@ -39,16 +67,16 @@ select
 from %s`, strings.Join(sqlFieldsSplit, ", \n"), table)
 	var fields []Field
 	for counter, field := range fieldsSplit {
-		typ, ok := fieldTypes.Fields[field]
+		typ, ok := fieldsMap[field]
 		if !ok {
-			return fmt.Errorf("field %s not declared in fieldTypes", field)
+			return fmt.Errorf(`field "%s" not declared in fieldTypes`, field)
 		}
 		fields = append(fields, Field{
-			Name:    field,
-			Type:    typ,
-			Camel:   strcase.UpperCamelCase(field),
-			Camel_:  strcase.LowerCamelCase(field),
-			Counter: uint16(counter + 1),
+			Name:       field,
+			Type:       typ,
+			Camel:      strcase.UpperCamelCase(field),
+			CamelLower: strcase.LowerCamelCase(field),
+			Counter:    uint16(counter + 1),
 		})
 	}
 	ucc := strcase.UpperCamelCase(table)
@@ -145,7 +173,7 @@ ent init --target ./internal/data/ent/schema %s
               idTimestamps: getIdTimestamp(el.getIdTimestamps()),`, ucc)
 	for _, field := range fields {
 		fmt.Printf(`
-              %s: item.get%s(),`, field.Camel_, field.Camel)
+              %s: item.get%s(),`, field.CamelLower, field.Camel)
 	}
 	fmt.Println(`
             }
@@ -154,7 +182,7 @@ ent init --target ./internal/data/ent/schema %s
                 .set%s(new %sInfo()`, ucc, ucc)
 	for _, field := range fields {
 		fmt.Printf(`
-                    .set%s(%s.value.%s)`, field.Camel, ucc_, field.Camel_)
+                    .set%s(%s.value.%s)`, field.Camel, ucc_, field.CamelLower)
 	}
 	fmt.Println(`
                 )`)
@@ -162,7 +190,7 @@ ent init --target ./internal/data/ent/schema %s
   formData.value = {`)
 	for _, field := range fields {
 		fmt.Printf(`
-    %s: data.value.%s,`, field.Camel_, field.Camel_)
+    %s: data.value.%s,`, field.CamelLower, field.CamelLower)
 	}
 	fmt.Printf(`
   }
