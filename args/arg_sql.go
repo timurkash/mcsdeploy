@@ -54,7 +54,8 @@ func ArgSql(fieldsTable string) error {
 	}
 	fieldsString := split[0]
 	table := split[1]
-	plural := utils.Title(utils.GetPlural(table))
+	pluralLower := utils.GetPlural(table)
+	plural := utils.Title(pluralLower)
 	fieldsSplit := strings.Split(fieldsString, ",")
 	var sqlFieldsSplit []string
 	for i := range fieldsSplit {
@@ -165,6 +166,36 @@ ent init --target ./internal/data/ent/schema %s
             }
         },
 `, plural, plural, plural, plural, plural, plural, ucc, plural)
+	fmt.Printf(`        async act%s(action, %s) {
+            const metadata = await getMetadata()
+            if (!metadata) {
+                throw notAuthorizedError
+            }
+            const request = new %sRequest()
+                .setActionId(getActionId(action, %s))
+                .set%s(new %sInfo()
+                )
+            try {
+                const reply = await client.act%s(request, metadata)
+                const the%s = [...this.%s]
+                switch (action) {
+                    case GET:
+                        return this.get%sItem(reply)
+                    case INSERT:
+                        the%s.unshift(this.get%sItem(reply))
+                        this.%s = the%s
+                        return the%s
+                    case UPDATE:
+                        the%s[the%s.findIndex(el => el.idTimestamps.id === %s.id)] = this.get%sItem(reply)
+                        this.%s = the%s
+                        return the%s
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        },
+`, ucc, ucc_, ucc, ucc_, ucc, ucc, ucc, plural, pluralLower, ucc, plural, ucc, pluralLower, plural, plural, plural,
+		plural, ucc_, ucc, pluralLower, plural, plural)
 	fmt.Printf(`
         get%sItem(el) {
             const item = el.get%s()
