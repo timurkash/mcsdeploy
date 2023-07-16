@@ -64,28 +64,30 @@ func GetSinglePlural(argStrings []string) (singlePlural *SinglePlural) {
 		single = split[0]
 		service = split[1]
 	}
-	plural := getPlural(single)
-	title := func(str string) string {
-		return cas.String(str[:1]) + str[1:]
-	}
-	lower := func(str string) string {
-		return strings.ToLower(str[:1]) + str[1:]
-	}
+	plural := GetPlural(single)
 	return &SinglePlural{
-		Single:           title(single),
-		SingleLower:      lower(single),
+		Single:           Title(single),
+		SingleLower:      Lower(single),
 		SingleLowerLower: strings.ToLower(single),
 		Lower:            strings.ToLower(single),
 		SnakeLower:       strcase.SnakeCase(single),
 		SnakePlural:      strcase.SnakeCase(plural),
-		Plural:           title(plural),
-		PluralLower:      lower(plural),
+		Plural:           Title(plural),
+		PluralLower:      Lower(plural),
 		Service:          service,
-		ServiceLower:     lower(service),
+		ServiceLower:     Lower(service),
 	}
 }
 
-func getPlural(single string) string {
+func Title(str string) string {
+	return cas.String(str[:1]) + str[1:]
+}
+
+func Lower(str string) string {
+	return strings.ToLower(str[:1]) + str[1:]
+}
+
+func GetPlural(single string) string {
 	const irrPluralsFilename = "irr_plurals.yaml"
 	plural := fmt.Sprintf("%ss", single)
 	if !IsFileExists(irrPluralsFilename) {

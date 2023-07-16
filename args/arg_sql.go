@@ -54,6 +54,7 @@ func ArgSql(fieldsTable string) error {
 	}
 	fieldsString := split[0]
 	table := split[1]
+	plural := utils.Title(utils.GetPlural(table))
 	fieldsSplit := strings.Split(fieldsString, ",")
 	var sqlFieldsSplit []string
 	for i := range fieldsSplit {
@@ -152,25 +153,23 @@ ent init --target ./internal/data/ent/schema %s
         async list%s() {
             const metadata = await getMetadata()
             if (!metadata) {
-                this.products = Array()
-                return
+                throw notAuthorizedError
             }
             try {
                 const the%s = Array()
                 const reply = await client.list%s(new List%sRequest(), metadata)
-                reply.getItemsList().forEach(el => the%s.push(this.get%sItem(el)))
-                this.%s = the%s
+                reply.get%sList().forEach(el => the%s.push(this.get%sItem(el)))
                 return the%s
             } catch (err) {
                 console.error(err)
             }
         },
-`, ucc, ucc, ucc, ucc, ucc, ucc, ucc_, ucc, ucc)
+`, plural, plural, plural, plural, plural, plural, ucc, plural)
 	fmt.Printf(`
         get%sItem(el) {
-            const item = el.getItem()
+            const item = el.get%s()
             return {
-              idTimestamps: getIdTimestamp(el.getIdTimestamps()),`, ucc)
+              idTimestamps: getIdTimestamp(el.getIdTimestamps()),`, ucc, ucc)
 	for _, field := range fields {
 		fmt.Printf(`
               %s: item.get%s(),`, field.CamelLower, field.Camel)
