@@ -114,9 +114,9 @@ func (r *{{ .ServiceLower }}Repo) Create{{ .Single }}(ctx context.Context, info 
 }
 
 func (r *{{ .ServiceLower }}Repo) Update{{ .Single }}(ctx context.Context, id uint32, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
-	update{{ .Single }}Record := r.relational.{{ .Single }}.UpdateOneID(id).
-		SetUpdatedAt(time.Now())
-	{{ .SingleLower }}Updated, err := update{{ .Single }}Record.Save(ctx)
+	{{ .SingleLower }}Updated, err := r.relational.{{ .Single }}.UpdateOneID(id).
+		SetUpdatedAt(time.Now()).
+		Save(ctx)
 	if err != nil {
 		return nil, err
 	}
