@@ -21,18 +21,14 @@ type Util struct {
 
 func IsFileExists(filename string) bool {
 	fi, err := os.Stat(filename)
-	if err == nil {
-		if !fi.IsDir() {
-			return true
-		} else {
-			log.Println(filename, "is directory")
-			return false
-		}
-	}
-	if os.IsNotExist(err) {
+	if err != nil {
 		return false
 	}
-	return false
+	if fi.IsDir() {
+		log.Println(filename, "is directory")
+		return false
+	}
+	return true
 }
 
 type SinglePlural struct {

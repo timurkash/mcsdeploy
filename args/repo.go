@@ -35,7 +35,8 @@ func (uc *{{ .Service }}Usecase) Act{{ .Single }}(ctx context.Context, actionId 
 	if err := cerrors.CheckActionId(actionId, {{ .SingleLower }}Info,
 		common.Action_get,
 		common.Action_insert,
-		common.Action_update); err != nil {
+		common.Action_update,
+    ); err != nil {
 		return nil, err
 	}
 	if err := uc.checkPermission(ctx); err != nil {
