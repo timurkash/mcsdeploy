@@ -102,11 +102,11 @@ func (r *{{ .ServiceLower }}Repo) Create{{ .Single }}(ctx context.Context, info 
 		return nil, err
 	}
 	now := time.Now()
-	create{{ .Single }}Record := r.relational.{{ .Single }}.Create().
+	{{ .SingleLower }}Created, err := r.relational.{{ .Single }}.Create().
 		SetID(max + 1).
 		SetCreatedAt(now).
-		SetUpdatedAt(now)
-	{{ .SingleLower }}Created, err := create{{ .Single }}Record.Save(ctx)
+		SetUpdatedAt(now).
+		Save(ctx)
 	if err != nil {
 		return nil, err
 	}
