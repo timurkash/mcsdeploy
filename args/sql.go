@@ -108,7 +108,7 @@ ent init --target ./internal/data/ent/schema %s
 	for _, field := range fields {
 		var entType string
 		switch field.Type {
-		case "string", "uint32", "bool", "uint64":
+		case "string", "uint32", "bool", "uint64", "int32", "int64":
 			entType = fmt.Sprintf("%s%s", strings.ToUpper(field.Type[:1]), field.Type[1:])
 		case "double":
 			entType = "Float"
