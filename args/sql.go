@@ -55,7 +55,8 @@ func ArgSql(fieldsTable string) error {
 	fieldsString := split[0]
 	table := split[1]
 	pluralLower := utils.GetPlural(table)
-	plural := utils.Title(pluralLower)
+	plural := strcase.UpperCamelCase(pluralLower)
+	//plural := utils.Title(pluralLower)
 	fieldsSplit := strings.Split(fieldsString, ",")
 	var sqlFieldsSplit []string
 	for i := range fieldsSplit {
