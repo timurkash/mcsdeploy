@@ -85,14 +85,14 @@ func (r *{{ .ServiceLower }}Repo) get{{ .Single }}Reply(record *ent.{{ .Single }
 	}
 }
 
-func (r *{{ .ServiceLower }}Repo) getMax{{ .Single }}(ctx context.Context) (uint32, error) {
+func (r *{{ .ServiceLower }}Repo) getNextId{{ .Single }}(ctx context.Context) (uint32, error) {
 	var v []struct {
 		Max int
 	}
 	if err := r.relational.{{ .Single }}.Query().Aggregate(ent.Max(consts.Id)).Scan(ctx, &v); err != nil {
 		return 0, err
 	}
-	return uint32(v[0].Max), nil
+	return uint32(v[0].Max) + 1, nil
 }
 
 func (r *{{ .ServiceLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32) (*pb.{{ .Single }}Reply, error) {
@@ -104,13 +104,13 @@ func (r *{{ .ServiceLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint3
 }
 
 func (r *{{ .ServiceLower }}Repo) Create{{ .Single }}(ctx context.Context, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
-	max, err := r.getMax{{ .Single }}(ctx)
+	nextId, err := r.getNextId{{ .Single }}(ctx)
 	if err != nil {
 		return nil, err
 	}
 	now := time.Now()
 	{{ .SingleLower }}Created, err := r.relational.{{ .Single }}.Create().
-		SetID(max + 1).
+		SetID(nextId).
 		SetCreatedAt(now).
 		SetUpdatedAt(now).
 		Save(ctx)

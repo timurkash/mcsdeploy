@@ -189,13 +189,18 @@ ent init --target ./internal/data/ent/schema %s
                         the%s[the%s.findIndex(el => el.idTimestamps.id === %s.id)] = this.get%sItem(reply)
                         this.%s = the%s
                         return the%s
+                    case DELETE:
+                        the%s.splice(the%s.findIndex(el => el.idTimestamps.id === %s.id), 1)
+                        this.%s = the%s
+                        return the%s
                 }
             } catch (err) {
                 console.error(err)
             }
         },
-`, ucc, ucc_, ucc, ucc_, ucc, ucc, ucc, plural, pluralLower, ucc, plural, ucc, pluralLower, plural, plural, plural,
-		plural, ucc_, ucc, pluralLower, plural, plural)
+`, ucc, ucc_, ucc, ucc_, ucc, ucc, ucc, plural, pluralLower, ucc, plural, ucc, pluralLower, plural, plural,
+		plural, plural, ucc, ucc, pluralLower, plural, plural,
+		plural, plural, ucc, ucc, plural, plural)
 	fmt.Printf(`
         get%sItem(el) {
             const item = el.get%s()
