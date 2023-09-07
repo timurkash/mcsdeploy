@@ -152,6 +152,12 @@ ent init --target ./internal/data/ent/schema %s
 
 // --- pinia actions
 
+	// import
+    Act%sRequest,
+    List%sRequest,
+    %sInfo,
+		
+
         async list%s() {
             const metadata = await getMetadata()
             if (!metadata) {
@@ -166,13 +172,13 @@ ent init --target ./internal/data/ent/schema %s
                 console.error(err)
             }
         },
-`, plural, plural, plural, plural, plural, plural, ucc, plural)
+`, plural, ucc, plural, plural, plural, plural, plural, plural, plural, ucc, plural)
 	fmt.Printf(`        async act%s(action, %s) {
             const metadata = await getMetadata()
             if (!metadata) {
                 throw notAuthorizedError
             }
-            const request = new %sRequest()
+            const request = new Act%sRequest()
                 .setActionId(getActionId(action, %s))
                 .set%s(new %sInfo()
                 )
@@ -200,8 +206,8 @@ ent init --target ./internal/data/ent/schema %s
             }
         },
 `, ucc, ucc_, ucc, ucc_, ucc, ucc, ucc, plural, pluralLower, ucc, plural, ucc, pluralLower, plural, plural,
-		plural, plural, ucc, ucc, pluralLower, plural, plural,
-		plural, plural, ucc, ucc, plural, plural)
+		plural, plural, ucc_, ucc, pluralLower, plural, plural,
+		plural, plural, ucc_, ucc, plural, plural)
 	fmt.Printf(`
         get%sItem(el) {
             const item = el.get%s()
