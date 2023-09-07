@@ -22,6 +22,7 @@ type {{ .Service }}Repo interface {
 	Get{{ .Single }}(context.Context, uint32) (*pb.{{ .Single }}Reply, error)
 	Create{{ .Single }}(context.Context, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
 	Update{{ .Single }}(context.Context, uint32, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
+	Delete{{ .Single }}(context.Context, uint32) error
 	List{{ .Plural }}(context.Context, *common.Filter, *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error)
 }
 
@@ -36,6 +37,7 @@ func (uc *{{ .Service }}Usecase) Act{{ .Single }}(ctx context.Context, actionId 
 		common.Action_get,
 		common.Action_insert,
 		common.Action_update,
+		common.Action_delete,
     ); err != nil {
 		return nil, err
 	}
@@ -49,6 +51,11 @@ func (uc *{{ .Service }}Usecase) Act{{ .Single }}(ctx context.Context, actionId 
 		return uc.repo.Create{{ .Single }}(ctx, {{ .SingleLower }}Info)
 	case common.Action_update:
 		return uc.repo.Update{{ .Single }}(ctx, actionId.Id, {{ .SingleLower }}Info)
+	case common.Action_delete:
+		if err := uc.repo.Delete{{ .Single }}(ctx, actionId.Id); err != nil {
+			return nil, err
+		}
+		return &pb.{{ .Single }}Reply{}, nil
 	}
 	return nil, cerrors.GetWrongActionError(actionId.Action)
 }
@@ -121,6 +128,10 @@ func (r *{{ .ServiceLower }}Repo) Update{{ .Single }}(ctx context.Context, id ui
 		return nil, err
 	}
 	return r.get{{ .Single }}Reply({{ .SingleLower }}Updated), nil
+}
+
+func (r *{{ .ServiceLower }}Repo) DeleteBotTerminal(ctx context.Context, id uint32) error {
+	return r.relational.{{ .Single }}.DeleteOneID(id).Exec(ctx)
 }
 
 func (r *{{ .ServiceLower }}Repo) List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error) {
