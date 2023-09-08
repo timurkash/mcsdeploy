@@ -56,6 +56,7 @@ func ArgSql(fieldsTable string) error {
 	table := split[1]
 	pluralLower := utils.GetPlural(table)
 	plural := strcase.UpperCamelCase(pluralLower)
+	plural_ := strcase.LowerCamelCase(pluralLower)
 	//plural := utils.Title(pluralLower)
 	fieldsSplit := strings.Split(fieldsString, ",")
 	var sqlFieldsSplit []string
@@ -156,7 +157,9 @@ ent init --target ./internal/data/ent/schema %s
     Act%sRequest,
     List%sRequest,
     %sInfo,
-		
+
+	// state
+	%s: Array(),
 
         async list%s() {
             const metadata = await getMetadata()
@@ -172,7 +175,7 @@ ent init --target ./internal/data/ent/schema %s
                 console.error(err)
             }
         },
-`, plural, ucc, plural, plural, plural, plural, plural, plural, plural, ucc, plural)
+`, plural, ucc, plural, plural_, plural, plural, plural, plural, plural, plural, ucc, plural)
 	fmt.Printf(`        async act%s(action, %s) {
             const metadata = await getMetadata()
             if (!metadata) {
@@ -207,7 +210,7 @@ ent init --target ./internal/data/ent/schema %s
         },
 `, ucc, ucc_, ucc, ucc_, ucc, ucc, ucc, plural, pluralLower, ucc, plural, ucc, pluralLower, plural, plural,
 		plural, plural, ucc_, ucc, pluralLower, plural, plural,
-		plural, plural, ucc_, ucc, plural, plural)
+		plural, plural, ucc_, plural_, plural, plural)
 	fmt.Printf(`
         get%sItem(el) {
             const item = el.get%s()
