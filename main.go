@@ -80,6 +80,14 @@ func main() {
 		if err := args.ArgSql(argStrings[2]); err != nil {
 			log.Fatalln(err)
 		}
+	case "-msg":
+		if len(argStrings) <= 2 {
+			args.ShowDescription()
+			return
+		}
+		if err := args.ArgMes(argStrings[2]); err != nil {
+			log.Fatalln(err)
+		}
 	default:
 		log.Fatalf("option %s not defined\n", arg)
 	}
