@@ -35,7 +35,7 @@ func findMessage(filepath, message string) error {
 			fmt.Println()
 			fmt.Printf("// %s\n", filepath)
 			fmt.Println()
-			fmt.Printf("get%s(item) {\n", message)
+			fmt.Printf("export function get%s(item) {\n", message)
 			fmt.Println("\tif (item) {")
 			fmt.Println("\t\treturn {")
 			found = true
