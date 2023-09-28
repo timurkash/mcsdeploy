@@ -75,8 +75,8 @@ func processLine(line string) {
 	case strings.HasPrefix(typ, "[]"):
 		fmt.Printf("%s: item.get%sList(),\n", name_, name)
 	case strings.HasPrefix(typ, "*common."):
-		fun := typ[8:]
-		fmt.Printf("%s: get%s(item.get%s()), //common\n", name_, fun, name)
+		getFun := "get" + typ[8:]
+		fmt.Printf("%s: get%s(item.get%s()), // import {get%s} from '@/assets/json/common/common'\n", name_, getFun, name, getFun)
 	case strings.HasPrefix(typ, "*"):
 		fun := typ[1:]
 		fmt.Printf("%s: get%s(item.get%s()),\n", name_, fun, name)
