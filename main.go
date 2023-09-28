@@ -88,6 +88,14 @@ func main() {
 		if err := args.ArgMes(argStrings[2]); err != nil {
 			log.Fatalln(err)
 		}
+	case "-req":
+		if len(argStrings) <= 2 {
+			args.ShowDescription()
+			return
+		}
+		if err := args.ArgActRequest(argStrings[2]); err != nil {
+			log.Fatalln(err)
+		}
 	default:
 		log.Fatalf("option %s not defined\n", arg)
 	}
