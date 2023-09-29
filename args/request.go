@@ -67,15 +67,6 @@ func findInfoMessage(filepath, message string) error {
 	return nil
 }
 
-func processActLine(line string) {
-	line = strings.Trim(line, "\t")
-	lexemes := strings.Split(line, " ")
-	name := lexemes[0]
-	name_ := strcase.LowerCamelCase(name)
-	fmt.Print("\t\t\t")
-	fmt.Printf(".set%s(item.%s)\n", name, name_)
-}
-
 func findNotInfoMessage(filepath, message string) error {
 	bytes, err := os.ReadFile(filepath)
 	if err != nil {
@@ -112,4 +103,13 @@ func findNotInfoMessage(filepath, message string) error {
 	}
 	_ = found
 	return nil
+}
+
+func processActLine(line string) {
+	line = strings.Trim(line, "\t")
+	lexemes := strings.Split(line, " ")
+	name := lexemes[0]
+	name_ := strcase.LowerCamelCase(name)
+	fmt.Print("\t\t\t")
+	fmt.Printf(".set%s(item.%s)\n", name, name_)
 }

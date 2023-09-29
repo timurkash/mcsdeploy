@@ -96,6 +96,14 @@ func main() {
 		if err := args.ArgActRequest(argStrings[2]); err != nil {
 			log.Fatalln(err)
 		}
+	case "-enm":
+		if len(argStrings) <= 2 {
+			args.ShowDescription()
+			return
+		}
+		if err := args.ArgEnum(argStrings[2]); err != nil {
+			log.Fatalln(err)
+		}
 	default:
 		log.Fatalf("option %s not defined\n", arg)
 	}
