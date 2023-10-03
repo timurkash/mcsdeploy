@@ -162,14 +162,14 @@ ent init --target ./internal/data/ent/schema %s
             }
             try {
                 const reply = await client.list%s(new List%sRequest(), metadata)
-                const %s = Array()
-                reply.get%sList().forEach(el => %s.push(get%sReply(el)))
-                return %s
+                const items = Array()
+                reply.get%sList().forEach(el => items.push(get%sReply(el)))
+                return items
             } catch (err) {
                 console.error(err)
             }
         },
-`, ucc, plural, plural, plural, plural, plural, plural, ucc, plural)
+`, plural, plural, plural, plural, plural, ucc)
 	fmt.Printf(`        async act%s(actionIdItem) {
             const metadata = await getMetadata()
             if (!metadata) {
