@@ -56,7 +56,6 @@ func ArgSql(fieldsTable string) error {
 	table := split[1]
 	pluralLower := utils.GetPlural(table)
 	plural := strcase.UpperCamelCase(pluralLower)
-	plural_ := strcase.LowerCamelCase(pluralLower)
 	//plural := utils.Title(pluralLower)
 	fieldsSplit := strings.Split(fieldsString, ",")
 	var sqlFieldsSplit []string
@@ -154,12 +153,7 @@ ent init --target ./internal/data/ent/schema %s
 // --- pinia actions
 
 	// import
-    Act%sRequest,
     List%sRequest,
-    %sInfo,
-
-	// state
-	%s: Array(),
 
         async list%s() {
             const metadata = await getMetadata()
@@ -167,50 +161,27 @@ ent init --target ./internal/data/ent/schema %s
                 throw notAuthorizedError
             }
             try {
-                const the%s = Array()
                 const reply = await client.list%s(new List%sRequest(), metadata)
-                reply.get%sList().forEach(el => the%s.push(this.get%sItem(el)))
-                return the%s
+                const %s = Array()
+                reply.get%sList().forEach(el => %s.push(get%sReply(el)))
+                return %s
             } catch (err) {
                 console.error(err)
             }
         },
-`, plural, ucc, plural, plural_, plural, plural, plural, plural, plural, plural, ucc, plural)
-	fmt.Printf(`        async act%s(action, %s) {
+`, ucc, plural, plural, plural, plural, plural, plural, ucc, plural)
+	fmt.Printf(`        async act%s(actionIdItem) {
             const metadata = await getMetadata()
             if (!metadata) {
                 throw notAuthorizedError
             }
-            const request = new Act%sRequest()
-                .setActionId(getActionId(action, %s))
-                .set%s(new %sInfo()
-                )
             try {
-                const reply = await client.act%s(request, metadata)
-                const the%s = [...this.%s]
-                switch (action) {
-                    case GET:
-                        return this.get%sItem(reply)
-                    case INSERT:
-                        the%s.unshift(this.get%sItem(reply))
-                        this.%s = the%s
-                        return the%s
-                    case UPDATE:
-                        the%s[the%s.findIndex(el => el.idTimestamps.id === %s.id)] = this.get%sItem(reply)
-                        this.%s = the%s
-                        return the%s
-                    case DELETE:
-                        the%s.splice(the%s.findIndex(el => el.idTimestamps.id === %s.id), 1)
-                        this.%s = the%s
-                        return the%s
-                }
+                return get%sReply(await client.act%s(getAct%sRequest(actionIdItem), metadata))
             } catch (err) {
                 console.error(err)
             }
         },
-`, ucc, ucc_, ucc, ucc_, ucc, ucc, ucc, plural, pluralLower, ucc, plural, ucc, pluralLower, plural, plural,
-		plural, plural, ucc_, ucc, pluralLower, plural, plural,
-		plural, plural, ucc_, plural_, plural, plural)
+`, ucc, ucc, ucc, ucc)
 	fmt.Printf(`
         get%sItem(el) {
             const item = el.get%s()
