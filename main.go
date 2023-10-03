@@ -85,7 +85,7 @@ func main() {
 			args.ShowDescription()
 			return
 		}
-		if err := args.ArgMes(argStrings[2]); err != nil {
+		if err := args.ArgMessage(argStrings[2]); err != nil {
 			log.Fatalln(err)
 		}
 	case "-req":
@@ -102,6 +102,14 @@ func main() {
 			return
 		}
 		if err := args.ArgEnum(argStrings[2]); err != nil {
+			log.Fatalln(err)
+		}
+	case "-srv":
+		if len(argStrings) <= 2 {
+			args.ShowDescription()
+			return
+		}
+		if err := args.ArgService(argStrings[2]); err != nil {
 			log.Fatalln(err)
 		}
 	default:

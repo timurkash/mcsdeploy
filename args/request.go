@@ -42,6 +42,8 @@ func findInfoMessage(filepath, message string) error {
 			fmt.Println()
 			fmt.Printf("// %s\n", filepath)
 			fmt.Println()
+			fmt.Printf("import {Act%sRequest, %sInfo} from \"@/assets/proto/js/api/%s/messages_pb\"\n", entity, entity, strings.ToLower(entity))
+			fmt.Println()
 			fmt.Printf("export function getAct%sRequest({action, id, item}) {\n", entity)
 			fmt.Printf("\tconst request = new Act%sRequest().setActionId(getActionId({action, id, item}))\n", entity)
 			fmt.Printf("\tif (action === INSERT || action === UPDATE) {\n")

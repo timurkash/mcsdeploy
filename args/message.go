@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func ArgMes(message string) error {
+func ArgMessage(message string) error {
 	if err := filepath.Walk("gen/go", func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() && (strings.HasSuffix(path, "/messages.pb.go") || strings.HasSuffix(path, "/common.pb.go")) {
 			if err := findMessage(path, message); err != nil {
