@@ -45,7 +45,7 @@ func findEnum(filepath, enum string) error {
 					return nil
 				} else {
 					if strings.Contains(line, enum+"_") {
-						processEnumLine(line)
+						processEnumLine(enum, line)
 					}
 				}
 			}
@@ -55,7 +55,7 @@ func findEnum(filepath, enum string) error {
 	return nil
 }
 
-func processEnumLine(line string) {
+func processEnumLine(enum, line string) {
 	line = strings.Trim(line, "\t")
 	lexemes := strings.Split(line, " ")
 	lexemesClear := make([]string, 0, 3)
@@ -64,9 +64,5 @@ func processEnumLine(line string) {
 			lexemesClear = append(lexemesClear, lex)
 		}
 	}
-	values := strings.Split(lexemesClear[0], "_")
-	//value := values[1]
-	//name := lexemes[0]
-	fmt.Printf("\t\tcase %s:\n", lexemesClear[2])
-	fmt.Printf("\t\t\treturn \"%s\"\n", values[1])
+	fmt.Printf("\t\tcase %s:\n\t\t\treturn \"%s\"\n", lexemesClear[2], lexemesClear[0][len(enum)+1:])
 }

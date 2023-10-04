@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"github.com/timurkash/mcsdeploy/args"
 	"github.com/timurkash/mcsdeploy/utils"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -28,6 +30,13 @@ func main() {
 	var service string
 	if len(argStrings) == 3 {
 		service = argStrings[2]
+	}
+	pwd, err := getPwd()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if pwd != "proto" {
+		log.Fatalln("you are not in proto")
 	}
 	switch arg {
 	case "-upv":
@@ -115,4 +124,16 @@ func main() {
 	default:
 		log.Fatalf("option %s not defined\n", arg)
 	}
+}
+
+func getPwd() (string, error) {
+	pwd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+	p := strings.LastIndex(pwd, "/")
+	if p == -1 {
+		return "", errors.New("bad dir")
+	}
+	return pwd[p+1:], nil
 }

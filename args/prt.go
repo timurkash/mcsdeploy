@@ -2,10 +2,10 @@ package args
 
 import "text/template"
 
-var ProtoTemp, _ = template.New("proto").Parse(proto)
+var ProtoTemp, _ = template.New("proto").Parse(protoTemplate)
 
 const (
-	proto = `
+	protoTemplate = `
 // --- services
   // {{ .Single }}
   rpc Act{{ .Single }} (Act{{ .Single }}Request) returns ({{ .Single }}Reply);
