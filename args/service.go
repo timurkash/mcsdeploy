@@ -18,7 +18,6 @@ func ArgService(service string) error {
 			if err := findMessagesAndEnums(fmt.Sprintf("api/%s/messages.proto", service)); err != nil {
 				return err
 			}
-
 		}
 	}
 	if !found {
@@ -71,7 +70,7 @@ func findMessagesAndEnums(filepath string) error {
 
 func clearSlice(slice []string) (result []string) {
 	for _, sl := range slice {
-		if sl != "" {
+		if sl != "" && sl != "=" && sl != "{" {
 			result = append(result, sl)
 		}
 	}

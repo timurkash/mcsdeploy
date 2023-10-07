@@ -121,6 +121,14 @@ func main() {
 		if err := args.ArgService(argStrings[2]); err != nil {
 			log.Fatalln(err)
 		}
+	case "-str":
+		if len(argStrings) <= 2 {
+			args.ShowDescription()
+			return
+		}
+		if err := args.ArgStore(argStrings[2]); err != nil {
+			log.Fatalln(err)
+		}
 	default:
 		log.Fatalf("option %s not defined\n", arg)
 	}

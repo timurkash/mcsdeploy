@@ -57,12 +57,6 @@ func findEnum(filepath, enum string) error {
 
 func processEnumLine(enum, line string) {
 	line = strings.Trim(line, "\t")
-	lexemes := strings.Split(line, " ")
-	lexemesClear := make([]string, 0, 3)
-	for _, lex := range lexemes {
-		if lex != "" && lex != "=" {
-			lexemesClear = append(lexemesClear, lex)
-		}
-	}
+	lexemesClear := clearSlice(strings.Split(line, " "))
 	fmt.Printf("\t\tcase %s:\n\t\t\treturn \"%s\"\n", lexemesClear[2], lexemesClear[0][len(enum)+1:])
 }
