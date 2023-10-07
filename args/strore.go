@@ -48,7 +48,7 @@ func findRpc(filepath string) error {
 func processRpcLine(line string) error {
 	lexemes := clearSlice(strings.Split(line, " "))
 	rpc := lexemes[1]
-	if len(lexemes) != 5 {
+	if len(lexemes) < 5 {
 		return fmt.Errorf("bad rpc line %s", rpc)
 	}
 	rpc_ := strings.ToLower(rpc[:1]) + rpc[1:]
@@ -61,7 +61,7 @@ func processRpcLine(line string) error {
 		param = "actionIdItem"
 	}
 	reply := clearMessage(lexemes[4])
-	fmt.Printf("    async %s(%s) {\n", rpc, param)
+	fmt.Printf("    async %s(%s) {\n", rpc_, param)
 	fmt.Printf("        try {\n")
 	fmt.Printf("            const reply = await client.%s(get%s(%s), await getMetadata())\n", rpc_, request, param)
 	fmt.Printf("            return get%s(reply)\n", reply)
