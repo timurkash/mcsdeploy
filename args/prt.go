@@ -20,8 +20,8 @@ message Act{{ .Single }}Request {
 }
 
 message {{ .Single }}Reply {
-  {{ .Single }}Info {{ .SnakeLower }} = 1;
-  common.IdTimestamps id_timestamps = 2;
+  common.IdTimestamps id_timestamps = 1;
+  {{ .Single }}Info {{ .SnakeLower }} = 2;
 }
 
 message {{ .Single }}Info {
