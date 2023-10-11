@@ -45,13 +45,27 @@ func findRpc(filepath string) error {
 	return nil
 }
 
+func toLowerFirst(str string) string {
+	if len(str) > 1 {
+		return strings.ToLower(str[:1]) + str[1:]
+	}
+	return strings.ToLower(str)
+}
+
+func toUpperFirst(str string) string {
+	if len(str) > 1 {
+		return strings.ToUpper(str[:1]) + str[1:]
+	}
+	return strings.ToUpper(str)
+}
+
 func processRpcLine(line string) error {
 	lexemes := clearSlice(strings.Split(line, " "))
 	rpc := lexemes[1]
 	if len(lexemes) < 5 {
 		return fmt.Errorf("bad rpc line %s", rpc)
 	}
-	rpc_ := strings.ToLower(rpc[:1]) + rpc[1:]
+	rpc_ := toLowerFirst(rpc)
 	if lexemes[3] != "returns" {
 		return fmt.Errorf("bad rpc line %s", rpc)
 	}

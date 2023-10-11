@@ -21,6 +21,11 @@ func ArgEnum(enum string) error {
 	return nil
 }
 
+type IdValue struct {
+	Id    string
+	Value string
+}
+
 func findEnum(filepath, enum string) error {
 	bytes, err := os.ReadFile(filepath)
 	if err != nil {
@@ -29,11 +34,10 @@ func findEnum(filepath, enum string) error {
 	lines := strings.Split(string(bytes), "\n")
 	found := false
 	typeMessageStruct := fmt.Sprintf("type %s int32", enum)
+	var idValues []IdValue
 	for _, line := range lines {
 		if line == typeMessageStruct {
-			fmt.Println()
 			fmt.Printf("// %s\n", filepath)
-			fmt.Println()
 			fmt.Printf("export function get%sString(id) {\n", enum)
 			fmt.Printf("\tswitch (id) {\n")
 			found = true
@@ -42,21 +46,31 @@ func findEnum(filepath, enum string) error {
 				if line == ")" {
 					fmt.Println("\t}")
 					fmt.Println("}")
-					return nil
+					break
 				} else {
 					if strings.Contains(line, enum+"_") {
-						processEnumLine(enum, line)
+						idValues = append(idValues, processEnumLine(enum, line))
 					}
 				}
 			}
 		}
 	}
-	_ = found
+	if found {
+		fmt.Printf("export const %sArray = [\n", toLowerFirst(enum))
+		for _, idValue := range idValues {
+			fmt.Printf("\t{id: %s, name: \"%s\"},\n", idValue.Id, idValue.Value)
+		}
+		fmt.Println("]")
+	}
 	return nil
 }
 
-func processEnumLine(enum, line string) {
+func processEnumLine(enum, line string) IdValue {
 	line = strings.Trim(line, "\t")
 	lexemesClear := clearSlice(strings.Split(line, " "))
-	fmt.Printf("\t\tcase %s:\n\t\t\treturn \"%s\"\n", lexemesClear[2], lexemesClear[0][len(enum)+1:])
+	id := lexemesClear[2]
+	value := lexemesClear[0][len(enum)+1:]
+	idValue := IdValue{Id: id, Value: value}
+	fmt.Printf("\t\tcase %s:\n\t\t\treturn \"%s\"\n", lexemesClear[2], value)
+	return idValue
 }
