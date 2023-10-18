@@ -32,9 +32,7 @@ func findMessage(filepath, message string) error {
 	typeMessageStruct := fmt.Sprintf("type %s struct {", message)
 	for _, line := range lines {
 		if line == typeMessageStruct {
-			fmt.Println()
 			fmt.Printf("// %s\n", filepath)
-			fmt.Println()
 			fmt.Printf("export function get%s(item) {\n", message)
 			fmt.Println("\tif (item) {")
 			fmt.Println("\t\treturn {")
