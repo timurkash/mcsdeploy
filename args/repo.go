@@ -83,6 +83,13 @@ func (uc *{{ .Service }}Usecase) List{{ .Plural }}(
 
 func (r *{{ .ServiceLower }}Repo) get{{ .Single }}Reply(record *ent.{{ .Single }}) *pb.{{ .Single }}Reply {
 	return &pb.{{ .Single }}Reply{
+		IdTimestamps: &common.IdTimestamps{
+			Id:        record.ID,
+			CreatedAt: others.PTimestamp(&record.CreatedAt),
+			UpdatedAt: others.PTimestamp(&record.UpdatedAt),
+		},
+		{{ .Single }}: &pb.{{ .Single }}Info{
+		},
 	}
 }
 
