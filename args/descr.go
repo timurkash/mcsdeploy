@@ -6,10 +6,16 @@ import (
 
 func ShowDescription() {
 	fmt.Println("This util for services deployment automation")
+	fmt.Println("-upv, -uvp, -vup - up the version")
 	fmt.Println("-env - envoy some settings")
 	fmt.Println("-mak - make commands")
-	fmt.Println("-doc - docker make commands")
-	//fmt.Println("-upv, -uvp, -vup - for upping the version (deprecated)")
+	fmt.Println("-dcr - docker make commands")
 	fmt.Println("-prt service - make proto rpc and messages with service")
-	fmt.Println("Util run on local dir with services.yaml")
+	fmt.Println("-rep service - implements services")
+	fmt.Println("-sql service - implements getReply etc")
+	fmt.Println("-srv service - get commands of msg, enm, req (pinia store)")
+	fmt.Println("-msg message - make json get & set message")
+	fmt.Println("-req message - make act request")
+	fmt.Println("-enm enum - make json case & array enum")
+	fmt.Println("-str service - make pinia actions of service")
 }

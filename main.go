@@ -55,21 +55,12 @@ func main() {
 		if err := args.ArgEnvoy(); err != nil {
 			log.Fatalln(err)
 		}
-	case "-doc":
+	case "-dcr":
 		if err := args.ArgDocker(); err != nil {
 			log.Fatalln(err)
 		}
 	case "-mak":
 		if err := args.ArgMake(); err != nil {
-			log.Fatalln(err)
-		}
-	case "-rep":
-		sp := utils.GetSinglePlural(argStrings)
-		if sp == nil {
-			args.ShowDescription()
-			return
-		}
-		if err := utils.StdOut(args.RepoTemp, sp); err != nil {
 			log.Fatalln(err)
 		}
 	case "-prt":
@@ -79,6 +70,15 @@ func main() {
 			return
 		}
 		if err := utils.StdOut(args.ProtoTemp, sp); err != nil {
+			log.Fatalln(err)
+		}
+	case "-rep":
+		sp := utils.GetSinglePlural(argStrings)
+		if sp == nil {
+			args.ShowDescription()
+			return
+		}
+		if err := utils.StdOut(args.RepoTemp, sp); err != nil {
 			log.Fatalln(err)
 		}
 	case "-sql":

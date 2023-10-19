@@ -19,6 +19,7 @@ func (s *{{ .Service }}Service) List{{ .Plural }}(ctx context.Context, req *pb.L
 // --- biz interface
 
 type {{ .Service }}Repo interface {
+	// {{ .Service }}
 	Get{{ .Single }}(context.Context, uint32) (*pb.{{ .Single }}Reply, error)
 	Create{{ .Single }}(context.Context, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
 	Update{{ .Single }}(context.Context, uint32, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
