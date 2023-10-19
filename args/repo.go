@@ -20,11 +20,11 @@ func (s *{{ .Service }}Service) List{{ .Plural }}(ctx context.Context, req *pb.L
 
 type {{ .Service }}Repo interface {
 	// {{ .Service }}
-	Get{{ .Single }}(context.Context, uint32) (*pb.{{ .Single }}Reply, error)
-	Create{{ .Single }}(context.Context, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
-	Update{{ .Single }}(context.Context, uint32, *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
-	Delete{{ .Single }}(context.Context, uint32) error
-	List{{ .Plural }}(context.Context, *common.Filter, *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error)
+	Get{{ .Single }}(ctx context.Context, id uint32) (*pb.{{ .Single }}Reply, error)
+	Create{{ .Single }}(ctx context.Context, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
+	Update{{ .Single }}(ctx context.Context, id uint32, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
+	Delete{{ .Single }}(ctx context.Context, id uint32) error
+	List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error)
 }
 
 // --- biz implementation
