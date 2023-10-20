@@ -24,7 +24,8 @@ type {{ .Service }}Repo interface {
 	Create{{ .Single }}(ctx context.Context, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
 	Update{{ .Single }}(ctx context.Context, id uint32, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error)
 	Delete{{ .Single }}(ctx context.Context, id uint32) error
-	List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) ([]*pb.{{ .Single }}Reply, *common.Paging, error)
+	List{{ .Plural }}(ctx context.Context, filter *common.Filter, ool *common.OrderOffsetLimit) (
+		[]*pb.{{ .Single }}Reply, *common.Paging, error)
 }
 
 // --- biz implementation
