@@ -51,12 +51,8 @@ func findMessagesAndEnums(filepath string) error {
 			lexemes := clearSlice(strings.Split(line, " "))
 			name := lexemes[1]
 			if typ == message {
-				if strings.HasSuffix(name, "Request") {
-					name = name[:len(name)-7]
-					if strings.HasPrefix(name, "Act") {
-						name = name[3:]
-					}
-					fmt.Printf("mcsdeploy -req %sInfo | pbcopy\n", name)
+				if strings.HasPrefix(name, "Act") && strings.HasSuffix(name, "Request") {
+					fmt.Printf("mcsdeploy -act %s | pbcopy\n", name)
 				} else {
 					fmt.Printf("mcsdeploy -msg %s | pbcopy\n", name)
 				}

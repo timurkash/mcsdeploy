@@ -43,10 +43,34 @@ func findMessage(filepath, message string) error {
 					fmt.Println("\t\t}")
 					fmt.Println("\t}")
 					fmt.Println("}")
-					return nil
+					break
 				} else {
 					if strings.Contains(line, "`protobuf") {
-						processLine(line)
+						processLineGet(line)
+					}
+				}
+			}
+		}
+	}
+	if !found || strings.HasSuffix(message, "Reply") {
+		return nil
+	}
+	found = false
+	for _, line := range lines {
+		if line == typeMessageStruct {
+			fmt.Printf("export function set%s(item) {\n", message)
+			fmt.Println("\tif (item) {")
+			fmt.Printf("\t\treturn new %s()\n", message)
+			found = true
+		} else {
+			if found {
+				if line == "}" {
+					fmt.Println("\t}")
+					fmt.Println("}")
+					break
+				} else {
+					if strings.Contains(line, "`protobuf") {
+						processLineSet(line)
 					}
 				}
 			}
@@ -56,7 +80,7 @@ func findMessage(filepath, message string) error {
 	return nil
 }
 
-func processLine(line string) {
+func processLineGet(line string) {
 	line = strings.Trim(line, "\t")
 	lexemes := strings.Split(line, " ")
 	name := lexemes[0]
@@ -73,12 +97,35 @@ func processLine(line string) {
 	case strings.HasPrefix(typ, "[]"):
 		fmt.Printf("%s: item.get%sList(),\n", name_, name)
 	case strings.HasPrefix(typ, "*common."):
-		getFun := "get" + typ[8:]
-		fmt.Printf("%s: %s(item.get%s()), // import {%s} from '@/assets/json/common'\n", name_, getFun, name, getFun)
+		fmt.Printf("%s: get%s(item.get%s()), // import {get%s} from '@/assets/json/common'\n", name_, typ[8:], name, typ[8:])
 	case strings.HasPrefix(typ, "*"):
-		fun := typ[1:]
-		fmt.Printf("%s: get%s(item.get%s()),\n", name_, fun, name)
+		fmt.Printf("%s: get%s(item.get%s()),\n", name_, typ[1:], name)
 	default:
 		fmt.Printf("%s: item.get%s(),\n", name_, name)
+	}
+}
+
+func processLineSet(line string) {
+	line = strings.Trim(line, "\t")
+	lexemes := strings.Split(line, " ")
+	name := lexemes[0]
+	name_ := strcase.LowerCamelCase(name)
+	typ := ""
+	for i, lexeme := range lexemes {
+		if i > 0 && lexeme != "" {
+			typ = lexeme
+			break
+		}
+	}
+	fmt.Print("\t\t\t.set")
+	switch {
+	case strings.HasPrefix(typ, "[]"):
+		fmt.Printf("%sList(item.%s)\n", name, name_) //TODO
+	case strings.HasPrefix(typ, "*common."):
+		fmt.Printf("%s(set%s(item.%s))\n", name, typ[8:], name_)
+	case strings.HasPrefix(typ, "*"):
+		fmt.Printf("%s(set%s(item.%s))\n", name, typ[1:], name_)
+	default:
+		fmt.Printf("%s(item.%s)\n", name, name_)
 	}
 }

@@ -14,8 +14,8 @@ func ShowDescription() {
 	fmt.Println("-rep service - implements services")
 	fmt.Println("-sql service - implements getReply etc")
 	fmt.Println("-srv service - get commands of msg, enm, req (pinia store)")
+	fmt.Println("-act message - make act request")
 	fmt.Println("-msg message - make json get & set message")
-	fmt.Println("-req message - make act request")
 	fmt.Println("-enm enum - make json case & array enum")
 	fmt.Println("-str service - make pinia actions of service")
 }

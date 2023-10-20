@@ -97,7 +97,7 @@ func main() {
 		if err := args.ArgMessage(argStrings[2]); err != nil {
 			log.Fatalln(err)
 		}
-	case "-req":
+	case "-act":
 		if len(argStrings) <= 2 {
 			args.ShowDescription()
 			return
