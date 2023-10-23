@@ -30,47 +30,48 @@ func findMessage(filepath, message string) error {
 	lines := strings.Split(string(bytes), "\n")
 	found := false
 	typeMessageStruct := fmt.Sprintf("type %s struct {", message)
-	for _, line := range lines {
-		if line == typeMessageStruct {
-			fmt.Printf("// %s\n", filepath)
-			fmt.Printf("export function get%s(item) {\n", message)
-			fmt.Println("\tif (item) {")
-			fmt.Println("\t\treturn {")
-			found = true
-		} else {
-			if found {
-				if line == "}" {
-					fmt.Println("\t\t}")
-					fmt.Println("\t}")
-					fmt.Println("}")
-					break
-				} else {
-					if strings.Contains(line, "`protobuf") {
-						processLineGet(line)
+	fmt.Printf("// %s\n", filepath)
+	if !strings.HasSuffix(message, "Request") {
+		for _, line := range lines {
+			if line == typeMessageStruct {
+				fmt.Printf("export function get%s(item) {\n", message)
+				fmt.Println("\tif (item) {")
+				fmt.Println("\t\treturn {")
+				found = true
+			} else {
+				if found {
+					if line == "}" {
+						fmt.Println("\t\t}")
+						fmt.Println("\t}")
+						fmt.Println("}")
+						break
+					} else {
+						if strings.Contains(line, "`protobuf") {
+							processLineGet(line)
+						}
 					}
 				}
 			}
 		}
 	}
-	if !found || strings.HasSuffix(message, "Reply") {
-		return nil
-	}
 	found = false
-	for _, line := range lines {
-		if line == typeMessageStruct {
-			fmt.Printf("export function set%s(item) {\n", message)
-			fmt.Println("\tif (item) {")
-			fmt.Printf("\t\treturn new %s()\n", message)
-			found = true
-		} else {
-			if found {
-				if line == "}" {
-					fmt.Println("\t}")
-					fmt.Println("}")
-					break
-				} else {
-					if strings.Contains(line, "`protobuf") {
-						processLineSet(line)
+	if !strings.HasSuffix(message, "Reply") {
+		for _, line := range lines {
+			if line == typeMessageStruct {
+				fmt.Printf("export function set%s(item) {\n", message)
+				fmt.Println("\tif (item) {")
+				fmt.Printf("\t\treturn new %s()\n", message)
+				found = true
+			} else {
+				if found {
+					if line == "}" {
+						fmt.Println("\t}")
+						fmt.Println("}")
+						break
+					} else {
+						if strings.Contains(line, "`protobuf") {
+							processLineSet(line)
+						}
 					}
 				}
 			}
@@ -130,7 +131,7 @@ func processLineSet(line string) {
 	case strings.HasPrefix(typ, "*common."):
 		fmt.Printf("%s(set%s(item.%s))\n", name, typ[8:], name_)
 	case strings.HasPrefix(typ, "*"):
-		fmt.Printf("%s(set%s(item.%s))\n", name, typ[1:], name_)
+		fmt.Printf("%s(set%s(item.%s))\n", name, name, name_)
 	default:
 		fmt.Printf("%s(item.%s)\n", name, name_)
 	}
