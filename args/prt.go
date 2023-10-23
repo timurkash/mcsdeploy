@@ -9,7 +9,7 @@ const (
 // --- services
   // {{ .Single }}
   rpc Act{{ .Single }} (Act{{ .Single }}Request) returns ({{ .Single }}Reply);
-  rpc List{{ .Plural }} (List{{ .Plural }}Request) returns (List{{ .Plural }}Reply);
+  rpc List{{ .Plural }} (common.ListFilterOolRequest) returns (List{{ .Plural }}Reply);
 
 // --- messages
 
@@ -24,10 +24,6 @@ message {{ .Single }}Reply {
 }
 message {{ .Single }}Info {
   string name = 1;
-}
-message List{{ .Plural }}Request {
-  common.Filter filter = 1;
-  common.OrderOffsetLimit ool = 2;
 }
 message List{{ .Plural }}Reply {
   repeated {{ .Single }}Reply {{ .SnakePlural }} = 1;

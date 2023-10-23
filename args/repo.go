@@ -12,7 +12,7 @@ func (s *{{ .Service }}Service) Act{{ .Single }}(ctx context.Context, req *pb.Ac
 	return s.uc.Act{{ .Single }}(ctx, req.ActionId, req.{{ .Single }})
 }
 
-func (s *{{ .Service }}Service) List{{ .Plural }}(ctx context.Context, req *pb.List{{ .Plural }}Request) (*pb.List{{ .Plural }}Reply, error) {
+func (s *{{ .Service }}Service) List{{ .Plural }}(ctx context.Context, req *common.ListFilterOolRequest) (*pb.List{{ .Plural }}Reply, error) {
 	return s.uc.List{{ .Plural }}(ctx, req.Filter, req.Ool)
 }
 

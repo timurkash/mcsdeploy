@@ -99,7 +99,13 @@ func processLineGet(line string) {
 	case strings.HasPrefix(typ, "*common."):
 		fmt.Printf("%s: get%s(item.get%s()), // import {get%s} from '@/assets/json/common'\n", name_, typ[8:], name, typ[8:])
 	case strings.HasPrefix(typ, "*"):
-		fmt.Printf("%s: get%s(item.get%s()),\n", name_, typ[1:], name)
+		//ix := strings.Index(typ, ".")
+		//if ix == -1 {
+		//	typ = typ[ix:]
+		//} else {
+		//	typ = typ[1:]
+		//}
+		fmt.Printf("%s: get%s(item.get%s()),\n", name_, name, name)
 	default:
 		fmt.Printf("%s: item.get%s(),\n", name_, name)
 	}
