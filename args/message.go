@@ -30,10 +30,10 @@ func findMessage(filepath, message string) error {
 	lines := strings.Split(string(bytes), "\n")
 	found := false
 	typeMessageStruct := fmt.Sprintf("type %s struct {", message)
-	fmt.Printf("// %s\n", filepath)
 	if !strings.HasSuffix(message, "Request") {
 		for _, line := range lines {
 			if line == typeMessageStruct {
+				fmt.Printf("// %s\n", filepath)
 				fmt.Printf("export function get%s(item) {\n", message)
 				fmt.Println("\tif (item) {")
 				fmt.Println("\t\treturn {")
@@ -58,6 +58,7 @@ func findMessage(filepath, message string) error {
 	if !strings.HasSuffix(message, "Reply") {
 		for _, line := range lines {
 			if line == typeMessageStruct {
+				fmt.Printf("// %s\n", filepath)
 				fmt.Printf("export function set%s(item) {\n", message)
 				fmt.Println("\tif (item) {")
 				fmt.Printf("\t\treturn new %s()\n", message)
