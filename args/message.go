@@ -117,7 +117,7 @@ func processLineSet(line string) {
 	line = strings.Trim(line, "\t")
 	lexemes := strings.Split(line, " ")
 	name := lexemes[0]
-	name_ := strcase.LowerCamelCase(name)
+	//name_ := strcase.LowerCamelCase(name)
 	typ := ""
 	for i, lexeme := range lexemes {
 		if i > 0 && lexeme != "" {
@@ -128,12 +128,12 @@ func processLineSet(line string) {
 	fmt.Print("\t\t\t.set")
 	switch {
 	case strings.HasPrefix(typ, "[]"):
-		fmt.Printf("%sList(item.%s)\n", name, name_) //TODO
+		fmt.Printf("%sList(item)\n", name) //TODO
 	case strings.HasPrefix(typ, "*common."):
-		fmt.Printf("%s(set%s(item.%s))\n", name, typ[8:], name_)
+		fmt.Printf("%s(set%s(item))\n", name, typ[8:])
 	case strings.HasPrefix(typ, "*"):
-		fmt.Printf("%s(set%s(item.%s))\n", name, name, name_)
+		fmt.Printf("%s(set%s(item))\n", name, name)
 	default:
-		fmt.Printf("%s(item.%s)\n", name, name_)
+		fmt.Printf("%s(item)\n", name)
 	}
 }
