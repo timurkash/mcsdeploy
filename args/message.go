@@ -35,13 +35,11 @@ func findMessage(filepath, message string) error {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
 				fmt.Printf("export const get%s = (item) => {\n", message)
-				fmt.Println("\tif (item) {")
-				fmt.Println("\t\treturn {")
+				fmt.Println("\tif (item) return {")
 				found = true
 			} else {
 				if found {
 					if line == "}" {
-						fmt.Println("\t\t}")
 						fmt.Println("\t}")
 						fmt.Println("}")
 						break
@@ -60,13 +58,11 @@ func findMessage(filepath, message string) error {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
 				fmt.Printf("export const set%s = (item) => {\n", message)
-				fmt.Println("\tif (item) {")
-				fmt.Printf("\t\treturn new %s()\n", message)
+				fmt.Printf("\tif (item) return new %s()\n", message)
 				found = true
 			} else {
 				if found {
 					if line == "}" {
-						fmt.Println("\t}")
 						fmt.Println("}")
 						break
 					} else {
@@ -94,7 +90,7 @@ func processLineGet(line string) {
 			break
 		}
 	}
-	fmt.Print("\t\t\t")
+	fmt.Print("\t\t")
 	switch {
 	case strings.HasPrefix(typ, "[]"):
 		fmt.Printf("%s: item.get%sList(),\n", name_, name)
@@ -125,7 +121,7 @@ func processLineSet(line string) {
 			break
 		}
 	}
-	fmt.Print("\t\t\t.set")
+	fmt.Print("\t\t.set")
 	switch {
 	case strings.HasPrefix(typ, "[]"):
 		fmt.Printf("%sList(item)\n", name) //TODO
