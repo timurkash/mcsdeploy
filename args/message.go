@@ -34,7 +34,7 @@ func findMessage(filepath, message string) error {
 		for _, line := range lines {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
-				fmt.Printf("export function get%s(item) {\n", message)
+				fmt.Printf("export const get%s = (item) => {\n", message)
 				fmt.Println("\tif (item) {")
 				fmt.Println("\t\treturn {")
 				found = true
@@ -59,7 +59,7 @@ func findMessage(filepath, message string) error {
 		for _, line := range lines {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
-				fmt.Printf("export function set%s(item) {\n", message)
+				fmt.Printf("export const set%s = (item) => {\n", message)
 				fmt.Println("\tif (item) {")
 				fmt.Printf("\t\treturn new %s()\n", message)
 				found = true
