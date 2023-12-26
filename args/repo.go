@@ -94,16 +94,6 @@ func (r *{{ .ServiceLower }}Repo) get{{ .Single }}Reply(record *ent.{{ .Single }
 	}
 }
 
-func (r *{{ .ServiceLower }}Repo) getNextId{{ .Single }}(ctx context.Context) (uint32, error) {
-	var v []struct {
-		Max int
-	}
-	if err := r.relational.{{ .Single }}.Query().Aggregate(ent.Max(consts.Id)).Scan(ctx, &v); err != nil {
-		return 0, err
-	}
-	return uint32(v[0].Max) + 1, nil
-}
-
 func (r *{{ .ServiceLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint32) (*pb.{{ .Single }}Reply, error) {
 	record, err := r.relational.{{ .Single }}.Get(ctx, id)
 	if err != nil {
@@ -113,10 +103,11 @@ func (r *{{ .ServiceLower }}Repo) Get{{ .Single }}(ctx context.Context, id uint3
 }
 
 func (r *{{ .ServiceLower }}Repo) Create{{ .Single }}(ctx context.Context, info *pb.{{ .Single }}Info) (*pb.{{ .Single }}Reply, error) {
-	nextId, err := r.getNextId{{ .Single }}(ctx)
-	if err != nil {
+	var v []struct { Max int }
+	if err := r.relational.{{ .Single }}.Query().Aggregate(ent.Max(consts.Id)).Scan(ctx, &v); err != nil {
 		return nil, err
 	}
+	nextId, now := uint32(v[0].Max) + 1, time.Now()
 	now := time.Now()
 	{{ .SingleLower }}Created, err := r.relational.{{ .Single }}.Create().
 		SetID(nextId).
