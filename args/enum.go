@@ -38,7 +38,7 @@ func findEnum(filepath, enum string) error {
 	for _, line := range lines {
 		if line == typeMessageStruct {
 			fmt.Printf("// %s\n", filepath)
-			fmt.Printf("export const get%sString = (id) => {\n", enum)
+			fmt.Printf("export const get%sString = id => {\n", enum)
 			fmt.Printf("\tswitch (id) {\n")
 			found = true
 		} else {

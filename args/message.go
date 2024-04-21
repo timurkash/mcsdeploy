@@ -34,14 +34,12 @@ func findMessage(filepath, message string) error {
 		for _, line := range lines {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
-				fmt.Printf("export const get%s = (item) => {\n", message)
-				fmt.Println("\tif (item) return {")
+				fmt.Printf("export const get%s = item => getIfItem(item, item => ({\n", message)
 				found = true
 			} else {
 				if found {
 					if line == "}" {
-						fmt.Println("\t}")
-						fmt.Println("}")
+						fmt.Println("}))")
 						break
 					} else {
 						if strings.Contains(line, "`protobuf") {
@@ -57,13 +55,12 @@ func findMessage(filepath, message string) error {
 		for _, line := range lines {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
-				fmt.Printf("export const set%s = (item) => {\n", message)
-				fmt.Printf("\tif (item) return new %s()\n", message)
+				fmt.Printf("export const set%s = item => getIfItem(item, item => new %s()\n", message, message)
 				found = true
 			} else {
 				if found {
 					if line == "}" {
-						fmt.Println("}")
+						fmt.Println(")")
 						break
 					} else {
 						if strings.Contains(line, "`protobuf") {
@@ -93,7 +90,7 @@ func processLineGet(line string) {
 	name_ := strcase.LowerCamelCase(name)
 	typ := getType(lexemes)
 	_typ := strings.Trim(typ, "[]*")
-	fmt.Print("\t\t")
+	fmt.Print("\t")
 	switch {
 	case strings.HasPrefix(typ, "[]"):
 		fmt.Printf("%s: listToArray(item.get%sList(), get%s),\n", name_, name, _typ)
@@ -111,7 +108,7 @@ func processLineSet(line string) {
 	name := lexemes[0]
 	//name_ := strcase.LowerCamelCase(name)
 	typ := getType(lexemes)
-	fmt.Print("\t\t.set")
+	fmt.Print("\t.set")
 	switch {
 	case strings.HasPrefix(typ, "[]"):
 		fmt.Printf("%sList(item)\n", name) //TODO
