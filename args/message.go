@@ -55,12 +55,12 @@ func findMessage(filepath, message string) error {
 		for _, line := range lines {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
-				fmt.Printf("export const set%s = item => getIfItem(item, item => new %s()\n", message, message)
+				fmt.Printf("const set%s = item => getIfItem(item, item => new %s()\n", message, message)
 				found = true
 			} else {
 				if found {
 					if line == "}" {
-						fmt.Println(")")
+						fmt.Println("\r)")
 						break
 					} else {
 						if strings.Contains(line, "`protobuf") {
@@ -106,17 +106,17 @@ func processLineGet(line string) {
 func processLineSet(line string) {
 	lexemes := strings.Split(strings.Trim(line, "\t"), " ")
 	name := lexemes[0]
-	//name_ := strcase.LowerCamelCase(name)
+	name_ := strcase.LowerCamelCase(name)
 	typ := getType(lexemes)
-	fmt.Print("\t.set")
+	fmt.Print("\t")
 	switch {
 	case strings.HasPrefix(typ, "[]"):
-		fmt.Printf("%sList(item)\n", name) //TODO
+		//fmt.Printf("%sList(item)\n", name) //TODO
 	case strings.HasPrefix(typ, "*common."):
-		fmt.Printf("%s(set%s(item))\n", name, typ[8:])
+		//fmt.Printf("%s(set%s(item))\n", name, typ[8:])
 	case strings.HasPrefix(typ, "*"):
-		fmt.Printf("%s(set%s(item))\n", name, strings.Trim(typ, "*"))
+		//fmt.Printf("%s(set%s(item))\n", name, strings.Trim(typ, "*"))
 	default:
-		fmt.Printf("%s(item)\n", name)
+		fmt.Printf(".set%s(item.%s)\n", name, name_)
 	}
 }
