@@ -52,7 +52,7 @@ func findMessage(filepath, message string) error {
 	}
 	found = false
 	if !strings.HasSuffix(message, "Reply") {
-		for _, line := range lines {
+		for i, line := range lines {
 			if line == typeMessageStruct {
 				fmt.Printf("// %s\n", filepath)
 				fmt.Printf("const set%s = item => getIfItem(item, item => new %s()\n", message, message)
@@ -64,7 +64,10 @@ func findMessage(filepath, message string) error {
 						break
 					} else {
 						if strings.Contains(line, "`protobuf") {
-							processLineSet(line)
+							prev := lines[i-1]
+							if !(strings.HasPrefix(prev, "\t// ro:") || strings.HasPrefix(prev, "\t//ro:")) {
+								processLineSet(line)
+							}
 						}
 					}
 				}
