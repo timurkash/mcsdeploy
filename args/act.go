@@ -10,7 +10,7 @@ func ArgActRequest(message string) error {
 		entity := message[3 : len(message)-7]
 		fmt.Printf("export const getAct%sRequest = aii => {\n", entity)
 		fmt.Printf("\tconst request = new Act%sRequest().setActionId(getActionId(aii))\n", entity)
-		fmt.Printf("\tif (INSERT_UPDATE.indexOf(aii.action) >= 0 && aii.item) request.set%s(get%sInfo(aii.item))\n", entity, entity)
+		fmt.Printf("\tif (INSERT_UPDATE.indexOf(aii.action) >= 0 && aii.item) request.set%s(set%sInfo(aii.item))\n", entity, entity)
 		fmt.Println("\treturn request")
 		fmt.Println("}")
 	}
