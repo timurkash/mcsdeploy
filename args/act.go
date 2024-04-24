@@ -8,13 +8,11 @@ import (
 func ArgActRequest(message string) error {
 	if strings.HasPrefix(message, "Act") && strings.HasSuffix(message, "Request") {
 		entity := message[3 : len(message)-7]
-		fmt.Printf("\texport const getAct%sRequest = ({action, id, item}) => {\n", entity)
-		fmt.Printf("\t\tconst request = new Act%sRequest().setActionId(getActionId({action, id, item}))\n", entity)
-		fmt.Printf("\t\tif (action === INSERT || action === UPDATE) {\n")
-		fmt.Printf("\t\t\trequest.set%s(set%sInfo(item))\n", entity, entity)
-		fmt.Println("\t\t}")
-		fmt.Println("\t\treturn request")
-		fmt.Println("\t}")
+		fmt.Printf("export const getAct%sRequest = aii => {\n", entity)
+		fmt.Printf("\tconst request = new Act%sRequest().setActionId(getActionId(aii))\n", entity)
+		fmt.Printf("\tif (INSERT_UPDATE.indexOf(aii.action) >= 0 && aii.item) request.set%s(get%sInfo(aii.item))\n", entity, entity)
+		fmt.Println("\treturn request")
+		fmt.Println("}")
 	}
 	return nil
 }
