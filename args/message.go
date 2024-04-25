@@ -115,9 +115,9 @@ func processLineSet(line string) {
 	case strings.HasPrefix(typ, "[]"):
 		//fmt.Printf("%sList(item)\n", name) //TODO
 	case strings.HasPrefix(typ, "*common."):
-		//fmt.Printf("%s(set%s(item))\n", name, typ[8:])
+		fmt.Printf("\t%s(set%s(item.%s))\n", name, typ[8:], name_)
 	case strings.HasPrefix(typ, "*"):
-		//fmt.Printf("%s(set%s(item))\n", name, strings.Trim(typ, "*"))
+		fmt.Printf("\t%s(set%s(item.%s))\n", name, strings.Trim(typ, "*"), name_)
 	default:
 		fmt.Printf("\t.set%s(item.%s)\n", name, name_)
 	}
