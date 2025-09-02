@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/stoewer/go-strcase"
 )
 
 func ArgEnum(enum string) error {
@@ -35,11 +37,13 @@ func findEnum(filepath, enum string) error {
 	found := false
 	typeMessageStruct := fmt.Sprintf("type %s int32", enum)
 	var idValues []IdValue
+	enum_ := strcase.LowerCamelCase(enum)
 	for _, line := range lines {
 		if line == typeMessageStruct {
 			fmt.Printf("// %s\n", filepath)
-			fmt.Printf("export const get%sString = id => {\n", enum)
-			fmt.Printf("\tswitch (id) {\n")
+			fmt.Printf("export const get%s = %s => ({%s, string: get%sString(%s)})\n", enum, enum_, enum_, enum, enum_)
+			fmt.Printf("const get%sString = %s => {\n", enum, enum_)
+			fmt.Printf("\tswitch (%s) {\n", enum_)
 			found = true
 		} else {
 			if found {

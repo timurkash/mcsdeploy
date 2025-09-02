@@ -93,8 +93,11 @@ func processLineGet(line string) {
 	name_ := strcase.LowerCamelCase(name)
 	typ := getType(lexemes)
 	_typ := strings.Trim(typ, "[]*")
+	isEnum := strings.Contains(line, ",enum=")
 	fmt.Print("\t")
 	switch {
+	case isEnum:
+		fmt.Printf("%s: get%s(item.get%s()),\n", name_, name, name)
 	case strings.HasPrefix(typ, "[]"):
 		fmt.Printf("%s: listToArray(item.get%sList(), get%s),\n", name_, name, _typ)
 	case strings.HasPrefix(typ, "*common."):
